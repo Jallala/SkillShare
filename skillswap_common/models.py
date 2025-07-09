@@ -10,7 +10,7 @@ class Skill(models.Model):
 
 class Rating(models.Model):
     name = models.CharField(max_length=256, blank=False)
-    rated_at = models.DateTimeField('Rated At', auto_created=True)
+    rated_at = models.DateTimeField('Rated At', auto_now_add=True)
     rated_by = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
