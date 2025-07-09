@@ -14,7 +14,7 @@ class Skill(ABC):
 class Rating(ABC):
     @property
     @abstractmethod
-    def rating() -> str:
+    def rating() -> int:
         pass
 
     @property
@@ -37,7 +37,7 @@ class Rating(ABC):
 class Message(ABC):
 
     @property
-    def text() -> str:
+    def message() -> str:
         pass
 
     @property
