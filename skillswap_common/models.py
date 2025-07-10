@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from . import abc
-
+from django.utils.dates import 
 
 class SkillCategory(models.Model):
     name = models.CharField(max_length=256)
@@ -39,6 +39,14 @@ class Message(models.Model):
         'UserProfile', on_delete=models.CASCADE, related_name='+')
     reciever = models.ForeignKey(
         'UserProfile', on_delete=models.CASCADE, related_name='+')
+    
+    def as_dict(self):
+        return {
+            'message': self.message,
+            'sent_at': self.sent_at.isoformat(),
+            'sender': self.sender.id,
+            'reciever': self.reciever.id
+        }
 
 
 class UserProfile(models.Model):
