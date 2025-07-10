@@ -4,8 +4,23 @@ from django.db import models
 from . import abc
 
 
+class SkillCategory(models.Model):
+    name = models.CharField(max_length=256)
+
+
 class Skill(models.Model):
+    OFFER = 'O'
+    REQUEST = 'R'
+    TYPE = {
+        'Offer': OFFER,
+        'Request': REQUEST
+    }
     name = models.CharField(max_length=256, blank=False)
+    description = models.CharField()
+    availability = models.BooleanField()
+    location = models.CharField()
+    skill_type = models.CharField(max_length=1, choices=TYPE, default=OFFER)
+    category = models.ForeignKey(SkillCategory)
 
 
 class Rating(models.Model):
