@@ -2,7 +2,6 @@ from django.db import models
 
 # Create your models here.
 from . import abc
-from django.utils.dates import 
 
 class SkillCategory(models.Model):
     name = models.CharField(max_length=256)
