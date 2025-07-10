@@ -18,9 +18,9 @@ class Skill(models.Model):
     user = models.ForeignKey(
         'UserProfile', on_delete=models.CASCADE, related_name='+')
     title = models.CharField(max_length=256, blank=False)
-    description = models.CharField()
+    description = models.TextField(max_length=4096)
     availability = models.BooleanField(default=True)
-    location = models.CharField()
+    location = models.CharField(max_length=256)
     skill_type = models.CharField(max_length=1, choices=TYPE, default=OFFER)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE)
 
