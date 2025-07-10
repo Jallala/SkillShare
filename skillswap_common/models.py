@@ -15,12 +15,14 @@ class Skill(models.Model):
         'Offer': OFFER,
         'Request': REQUEST
     }
+    user = models.ForeignKey(
+        'UserProfile', on_delete=models.CASCADE, related_name='+')
     name = models.CharField(max_length=256, blank=False)
     description = models.CharField()
     availability = models.BooleanField()
     location = models.CharField()
     skill_type = models.CharField(max_length=1, choices=TYPE, default=OFFER)
-    category = models.ForeignKey(SkillCategory)
+    category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE)
 
 
 class Rating(models.Model):
