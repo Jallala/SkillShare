@@ -1,0 +1,77 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<style>
+  .btn-custom {
+    background-color: #0097b2;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  .btn-outine-secondary {
+    background-color: white;
+    color: #0097b2;
+    border-color: #0097b2;
+  }
+
+  .btn-outine-secondary:hover {
+    background-color: #0097b2;
+    color: white;
+  }
+
+  .btn-custom:hover {
+    background-color: #0097b2;
+    color: white;
+  }
+</style>
+<div class="d-flex flex-column justify-content-center align-items-center vh-90">
+  <div class="text-center mb-4">
+    <img
+      src="{% static 'images/logo.png' %}"
+      alt="SkillSwap Logo"
+      class="img-fluid"
+      style="max-width: 260px;"
+    />
+    <p class="text-muted">Please log in using the form below</p>
+  </div>
+
+  <form method="post" class="w-100" style="max-width: 330px;">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="id_username" class="form-label fw-semibold">Email</label>
+      <input
+        type="text"
+        name="username"
+        class="form-control"
+        placeholder="example@gmail.com"
+        required
+        id="id_username"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="id_password" class="form-label fw-semibold">Password</label>
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        placeholder="password"
+        required
+        id="id_password"
+      />
+    </div>
+
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" id="rememberMe" />
+      <label class="form-check-label" for="rememberMe">Remember me</label>
+    </div>
+
+    <button type="submit" class="btn btn-custom w-100 mb-2">
+      Log in
+    </button>
+    <a href="{% url 'signup' %}" class="btn btn-outine-secondary w-100">
+      Sign Up
+    </a>
+  </form>
+</div>
+{% endblock %}
