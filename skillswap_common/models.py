@@ -54,12 +54,8 @@ class Message(models.Model):
             'message': self.message,
             'sent_at': self.sent_at.isoformat(),
             'sender': self.sender.id,
-            'reciever': self.reciever.id
+            'reciever': self.receiver.id
         }
-
-    @classmethod
-    def send(cls, sender: 'UserProfile | User', receiver: 'UserProfile | User', message: str):
-        cls(sender, receiver, message)
 
 
 class UserProfile(models.Model):
@@ -88,4 +84,3 @@ class UserProfile(models.Model):
         logger.warning('Could not convert {} into UserProfile',
                        (uid_or_user, ))
         return None
-        self.assertContains
