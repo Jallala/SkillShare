@@ -1,6 +1,9 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from unittest import skip
 from django.contrib.auth.models import User
 from skillswap_common import models
+from django.urls import reverse
+from . import urls
 # Create your tests here.
 
 
@@ -11,13 +14,19 @@ class ContactTestCase(TestCase):
     sender = None
     receiver = None
     other = None
-
+    auth = {}
+    
     def _create_user_with_profile(self):
-        auth = (f'test{self.counter}',
-                f'test{self.counter}@test.com', 'password')
-        user = User.objects.create_user(*auth)
+        auth = {
+            'username': f'test{self.counter}',
+            'email': f'test{self.counter}@test.com',
+            'password': 'password'
+        }
+        print(auth)
+        self.auth[self.counter] = auth
+        user = User.objects.create_user(**auth)
         user.save()
-        user_profile = models.UserProfile(user=user)
+        user_profile = models.UserProfile.objects.create(user=user)
         user_profile.save()
         self.users.append((user, user_profile))
         self.counter += 1
@@ -43,3 +52,20 @@ class ContactTestCase(TestCase):
         non_exisiting_user_id = self.counter
         with self.assertRaises(models.UserProfile.DoesNotExist):
             self.sender.send_message(non_exisiting_user_id, 'Hello')
+
+    # TODO Depends if contacting should be a REST API or not
+    def test_view_get_inbox(self):
+        client = Client()
+        client.login(**self.auth[self.sender.user.id])
+        print(reverse(urls.USER_INBOX))
+        request = client.get(reverse(urls.USER_INBOX))
+        data = request.json()
+        self.assertIn('messages', data)
+        self.assertEqual(data['messages'[0]['sender'] == self.sender.id])
+        self.assertEqual(data['messages'[0]['receiver'] == self.receiver.id])
+    
+    # TODO Depends if contacting should be a REST API or not
+    @skip('Not ready yet')
+    def test_view_get_unauthorized(self):
+        client = Client()
+        request = client.get(reverse(urls.USER_INBOX))
