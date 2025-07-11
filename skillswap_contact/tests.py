@@ -22,7 +22,6 @@ class ContactTestCase(TestCase):
             'email': f'test{self.counter}@test.com',
             'password': 'password'
         }
-        print(auth)
         self.auth[self.counter] = auth
         user = User.objects.create_user(**auth)
         user.save()
@@ -57,12 +56,11 @@ class ContactTestCase(TestCase):
     def test_view_get_inbox(self):
         client = Client()
         client.login(**self.auth[self.sender.user.id])
-        print(reverse(urls.USER_INBOX))
         request = client.get(reverse(urls.USER_INBOX))
         data = request.json()
         self.assertIn('messages', data)
-        self.assertEqual(data['messages'[0]['sender'] == self.sender.id])
-        self.assertEqual(data['messages'[0]['receiver'] == self.receiver.id])
+        self.assertEqual(data['messages'][0]['sender'], self.sender.id)
+        self.assertEqual(data['messages'][0]['receiver'], self.receiver.id)
     
     # TODO Depends if contacting should be a REST API or not
     @skip('Not ready yet')

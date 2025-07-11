@@ -54,7 +54,7 @@ class Message(models.Model):
             'message': self.message,
             'sent_at': self.sent_at.isoformat(),
             'sender': self.sender.id,
-            'reciever': self.receiver.id
+            'receiver': self.receiver.id
         }
 
 
