@@ -40,6 +40,7 @@ class Rating(models.Model):
     rated_by = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
+
 class Message(models.Model):
     sender = models.ForeignKey(
         'UserProfile', on_delete=models.CASCADE, related_name='+')
@@ -75,8 +76,8 @@ class UserProfile(models.Model):
             return message
         assert False
 
-    def messages(self):
-        return Message.objects.filter(Q(receiver=self) | Q(sender=self))
+    def inbox(self) -> 'QuerySet[Message]':
+        return Message.objects.filter(Q(receiver=self) | Q(sender=self)).order_by('sent_at')
 
     @classmethod
     def convert_to_user_profile(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile | None':
@@ -87,3 +88,4 @@ class UserProfile(models.Model):
         logger.warning('Could not convert {} into UserProfile',
                        (uid_or_user, ))
         return None
+        self.assertContains

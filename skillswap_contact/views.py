@@ -21,7 +21,7 @@ def contact_user(request: 'HttpRequest', uid: int) -> HttpResponse:
             send_request_to = UserProfile.objects.get(pk=uid)
             message = Message(sender=user_profile, receiver=send_request_to, text=text)
             message.save()
-            send_request_to.messages.add(message)
+            send_request_to.inbox.add(message)
     except (KeyError, ValueError):
         # TODO Check text length, and that both users exist
         logger.exception('Error sending message')

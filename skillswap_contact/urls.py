@@ -3,6 +3,6 @@ from skillswap_contact import views
 
 
 urlpatterns = [
-    path('contact_user', views.contact_user, name='Contact User'), 
-    path('inbox', views.contact_user, name='Contact User'), 
+    path('contact_user', views.contact_user, name='Contact User'),
+    path('messages', views.contact_user, name='Messages'),
 ]
