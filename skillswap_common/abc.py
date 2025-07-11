@@ -84,15 +84,23 @@ class Rating(ABC):
 class Message(ABC):
 
     @property
+    @abstractmethod
     def message(self) -> str:
         pass
 
     @property
+    @abstractmethod
     def sender(self) -> 'User':
         pass
 
     @property
-    def receiver(self) -> 'User':
+    @abstractmethod
+    def receiver() -> 'User':
+        pass
+
+    @property
+    @abstractmethod
+    def sent_at() -> 'datetime':
         pass
 
 
