@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'skillswap_common',
+    'search',
     'accounts',
     'skillswap_app',
 ]
