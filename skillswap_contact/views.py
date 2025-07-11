@@ -12,14 +12,17 @@ if TYPE_CHECKING:
     from django.db.models import QuerySet
 
 
-def contact_user(request: 'HttpRequest', uid: int, text: str) -> HttpResponse:
+def contact_user(request: 'HttpRequest', uid: int) -> HttpResponse:
     try:
         user = request.user
-        send_request_to = UserProfile.objects.get(pk=uid)
-        message = Message(sender=user, receiver=send_request_to, text=text)
-        message.save()
-        send_request_to.messages.add(message)
-    except ValueError:
+        if request.method == 'POST':
+            text = request.POST['message']
+            user_profile = UserProfile.objects.get(user=user)
+            send_request_to = UserProfile.objects.get(pk=uid)
+            message = Message(sender=user_profile, receiver=send_request_to, text=text)
+            message.save()
+            send_request_to.messages.add(message)
+    except (KeyError, ValueError):
         # TODO Check text length, and that both users exist
         logger.exception('Error sending message')
         return JsonResponse({'success': False})
