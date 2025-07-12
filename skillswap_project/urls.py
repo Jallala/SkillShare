@@ -21,6 +21,7 @@ from skillswap_app import views
 urlpatterns = [
     path('', include('skillswap_app.urls')),
     path('admin/', admin.site.urls),
+    path('', include('search.urls')),
     path('accounts/', include('accounts.urls')),
 
 ]
