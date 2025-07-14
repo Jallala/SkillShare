@@ -1,0 +1,86 @@
+<!-- prettier-ignore -->
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+
+<div class="container py-5">
+  <div class="bg-white rounded-4 shadow-sm p-5">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="d-flex flex-column align-items-center justify-content-center">
+        <img
+          src="{% static 'images/avatar.png' %}"
+          alt="Profile Photo"
+          class="rounded-circle me-3 mb-3"
+          style="width: 100px; height: 100px; object-fit: cover;"
+        />
+        <div>
+          <h5 class="mb-0">{{ user.first_name }} {{ user.last_name }}</h5>
+          <div class="text-warning">
+            ★★★★☆
+            <small class="text-muted">(4.5 points)</small>
+          </div>
+          {% if user_is_owner %}
+          <div class="mt-2">
+            <a
+              href="{% url 'edit_profile' %}"
+              class="btn btn-outline-secondary mb-3"
+            >
+              Edit Profile
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div>
+        <a href="#" class="btn btn-custom">Offer/Request a skill</a>
+      </div>
+    </div>
+    <div class="mb-4">
+      <h6><strong>About</strong></h6>
+      <p>{{ user.profile.bio }}</p>
+    </div>
+    <div class="mb-4">
+      <h6><strong>Skills Offered:</strong></h6>
+      <div class="row g-3">
+        {% for skill in user.profile.skills_offered.all %}
+        <div class="col-md-6">
+          <div class="border rounded p-3 h-100">
+            <h6><strong>{{ skill.title }}</strong></h6>
+            <p class="mb-1">{{ skill.description }}</p>
+            <p class="mb-2">
+              <strong>Category:</strong>
+              {{ skill.category }}
+            </p>
+            <a href="#" class="btn btn-custom btn-sm text-white">View</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="mb-4">
+      <h6><strong>Skills Required:</strong></h6>
+      {% for skill in user.profile.skills_needed.all %}
+      <span class="badge bg-light border text-dark me-1">{{ skill.name }}</span>
+      {% endfor %}
+    </div>
+
+    <div class="mb-4">
+      <h6><strong>Last reviews:</strong></h6>
+      {% for review in user.reviews_received.all %}
+      <div class="border rounded p-3 bg-light mb-2">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <strong>{{ review.reviewer.get_full_name }}</strong>
+          <span class="text-warning">★★★★☆</span>
+        </div>
+        <p class="mb-0">{{ review.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center">
+      <a href="#" class="btn btn-outine-secondary">Leave a review</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
