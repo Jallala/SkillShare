@@ -1,0 +1,22 @@
+
+  .btn-custom {
+    background-color: #0097b2; 
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  .btn-outine-secondary {
+    background-color: white;
+    color: #0097b2;
+    border-color: #0097b2;
+  }
+
+  .btn-outine-secondary:hover {
+    background-color: #0097b2;
+    color: white;
+  }
+
+  .btn-custom:hover {
+    background-color: #0097b2;
+    color: white;
+  }

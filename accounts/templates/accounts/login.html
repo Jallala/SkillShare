@@ -1,28 +1,15 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+<!-- prettier-ignore -->
+{% extends 'base.html' %}
+{% load static %} 
+{% block content %} 
+{% if form.errors %}
+<div class="alert alert-danger">
+  Invalid email or password. If you don’t have an account, please
+  <a href="{% url 'signup' %}">sign up</a>
+  .
+</div>
+{% endif %}
 
-<style>
-  .btn-custom {
-    background-color: #0097b2;
-    color: white;
-    border: none;
-    transition: background-color 0.3s ease;
-  }
-  .btn-outine-secondary {
-    background-color: white;
-    color: #0097b2;
-    border-color: #0097b2;
-  }
-
-  .btn-outine-secondary:hover {
-    background-color: #0097b2;
-    color: white;
-  }
-
-  .btn-custom:hover {
-    background-color: #0097b2;
-    color: white;
-  }
-</style>
 <div class="d-flex flex-column justify-content-center align-items-center vh-90">
   <div class="text-center mb-4">
     <img

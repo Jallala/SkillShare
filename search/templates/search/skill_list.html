@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Browse Skills</title>
+</head>
+<body>
+    <h1>Available Skills</h1>
+    <ul>
+        {% for skill in skills %}
+            <li><strong>{{ skill.title }}</strong> - {{ skill.description }} ({{ skill.get_skill_type_display }})</li>
+        {% empty %}
+            <li>No skills available.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

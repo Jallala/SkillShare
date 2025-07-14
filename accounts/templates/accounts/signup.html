@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<div class="d-flex flex-column justify-content-center align-items-center vh-90">
+  <div class="text-center mb-4">
+    <img
+      src="{% static 'images/logo.png' %}"
+      alt="SkillSwap Logo"
+      class="img-fluid"
+      style="max-width: 260px;"
+    />
+    <p class="text-muted">Create a new account</p>
+  </div>
+
+  <form method="post" class="w-100" style="max-width: 380px;">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="id_username" class="form-label fw-semibold">Username</label>
+      <input
+        type="text"
+        name="username"
+        id="id_username"
+        class="form-control"
+        placeholder="Enter your username"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="id_email" class="form-label fw-semibold">Email</label>
+      <input
+        type="email"
+        name="email"
+        id="id_email"
+        class="form-control"
+        placeholder="example@gmail.com"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="id_password1" class="form-label fw-semibold">Password</label>
+      <input
+        type="password"
+        name="password1"
+        id="id_password1"
+        class="form-control"
+        placeholder="Enter password"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="id_password2" class="form-label fw-semibold">
+        Confirm Password
+      </label>
+      <input
+        type="password"
+        name="password2"
+        id="id_password2"
+        class="form-control"
+        placeholder="Repeat password"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn btn-custom w-100 mb-2">Sign Up</button>
+    <a href="{% url 'login' %}" class="btn btn-outline-secondary w-100">
+      Already have an account? Log in
+    </a>
+  </form>
+</div>
+
+{% endblock %}
