@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
 class Message(models.Model):
     sender = models.ForeignKey(
         'Messages', on_delete=models.CASCADE, related_name='+')
@@ -28,7 +29,7 @@ class Message(models.Model):
             'sender': self.sender.id,
             'receiver': self.receiver.id
         }
-    
+
     def for_template(self):
         sender: 'Messages' = self.sender
         receiver: 'Messages' = self.receiver
@@ -40,13 +41,12 @@ class Message(models.Model):
         }
 
 
-
 class Messages(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     messages = models.ManyToManyField(Message)
 
     def send_message(self, other: 'Messages | int | User', message: str):
-        other = Messages.convert_to_user_profile(other)
+        other = Messages.convert_to_messages(other)
         if other is not None:
             message = Message(sender=self, receiver=other, message=message)
             message.save()
@@ -57,7 +57,7 @@ class Messages(models.Model):
         return Message.objects.filter(Q(receiver=self) | Q(sender=self)).order_by('sent_at')
 
     @classmethod
-    def convert_to_user_profile(cls, uid_or_user: 'int | User | Messages') -> 'Messages | None':
+    def convert_to_messages(cls, uid_or_user: 'int | User | Messages') -> 'Messages | None':
         if isinstance(uid_or_user, (int, User)):
             return Messages.objects.get(user=uid_or_user)
         elif isinstance(uid_or_user, cls):

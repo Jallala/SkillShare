@@ -41,48 +41,10 @@ class Rating(models.Model):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
 
-class Message(models.Model):
-    sender = models.ForeignKey(
-        'UserProfile', on_delete=models.CASCADE, related_name='+')
-    receiver = models.ForeignKey(
-        'UserProfile', on_delete=models.CASCADE, related_name='+')
-    message = models.TextField(max_length=4096)
-    sent_at = models.DateTimeField('Sent at', auto_now_add=True)
-
-    def as_dict(self):
-        return {
-            'message': self.message,
-            'sent_at': self.sent_at.isoformat(),
-            'sender': self.sender.id,
-            'receiver': self.receiver.id
-        }
-    
-    def for_template(self):
-        sender: 'UserProfile' = self.sender
-        receiver: 'UserProfile' = self.receiver
-        return {
-            'message': self.message,
-            'sent_at': self.sent_at.isoformat(),
-            'sender': sender.for_template(),
-            'receiver': receiver.for_template()
-        }
-
-
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     skills = models.ManyToManyField(Skill)
     ratings = models.ManyToManyField(Rating)
-
-    def send_message(self, other: 'UserProfile | int | User', message: str):
-        other = UserProfile.convert_to_user_profile(other)
-        if other is not None:
-            message = Message(sender=self, receiver=other, message=message)
-            message.save()
-            return message
-        assert False
-
-    def inbox(self) -> 'QuerySet[Message]':
-        return Message.objects.filter(Q(receiver=self) | Q(sender=self)).order_by('sent_at')
 
     @classmethod
     def convert_to_user_profile(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile | None':
