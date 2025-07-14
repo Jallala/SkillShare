@@ -12,18 +12,16 @@ if TYPE_CHECKING:
     from django.http import HttpRequest
     from django.db.models import QuerySet
 
+
 @login_required
 def contact_user(request: 'HttpRequest', uid: int) -> HttpResponse:
     try:
         user = request.user
         if request.method == 'POST':
-            text = request.POST['message']
+            message = request.POST['message']
             user_profile = UserProfile.objects.get(user=user)
             send_request_to = UserProfile.objects.get(pk=uid)
-            message = Message(sender=user_profile,
-                              receiver=send_request_to, text=text)
-            message.save()
-            send_request_to.inbox.add(message)
+            user_profile.send_message(send_request_to, message=message)
     except (KeyError, ValueError):
         # TODO Check text length, and that both users exist
         logger.exception('Error sending message')

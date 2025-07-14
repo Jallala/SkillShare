@@ -15,7 +15,7 @@ class ContactTestCase(TestCase):
     receiver = None
     other = None
     auth = {}
-    
+
     def _create_user_with_profile(self):
         auth = {
             'username': f'test{self.counter}',
@@ -61,9 +61,22 @@ class ContactTestCase(TestCase):
         self.assertIn('messages', data)
         self.assertEqual(data['messages'][0]['sender'], self.sender.id)
         self.assertEqual(data['messages'][0]['receiver'], self.receiver.id)
-    
+
     # TODO Depends if contacting should be a REST API or not
     @skip('Not ready yet')
     def test_view_get_unauthorized(self):
         client = Client()
         request = client.get(reverse(urls.USER_INBOX))
+
+    def test_send_message(self):
+        client = Client()
+        client.login(**self.auth[self.sender.user.id])
+        endpoint = reverse(urls.USER_CONTACT, kwargs={'uid': self.receiver.id})
+        message_text = 'Hello, Requesting Skill'
+        request = client.post(endpoint, data={'message': message_text})
+        self.assertTrue(request.json()['success'])
+        last_message = list(self.receiver.inbox())[-1]
+        self.assertEqual(list(self.sender.inbox())[-1], last_message)
+        self.assertEqual(message_text, last_message.message)
+        self.assertEqual(self.sender.user.id, last_message.sender.id)
+        self.assertEqual(self.receiver.user.id, last_message.receiver.id)
