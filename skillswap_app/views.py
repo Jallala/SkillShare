@@ -20,6 +20,6 @@ def create_skill(request):
             return redirect('sample_file')  # Or wherever you want
     else:
         form = SkillForm()
-    return render(request, 'index.html', {'form': form})
+    return render(request, 'skills.html', {'form': form})
 
 
