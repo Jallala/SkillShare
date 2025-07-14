@@ -4,6 +4,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Profile
 from .forms import ProfileForm, UserForm
+from django.contrib import messages
+from .forms import CustomUserCreationForm
+
 
 from django.conf import settings
 print(settings.TEMPLATES[0]['DIRS'])
@@ -11,14 +14,17 @@ print(settings.TEMPLATES[0]['DIRS'])
 
 def signup_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-
             Profile.objects.create(user=user)
+            messages.success(
+                request, 'Account created successfully! Now complete your profile.'
+            )
             return redirect('edit_profile')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
+
     return render(request, 'accounts/signup.html', {'form': form})
 
 
@@ -43,6 +49,7 @@ def edit_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
+            messages.success(request, 'Your profile has been updated.')
             return redirect('profile')
     else:
         user_form = UserForm(instance=user)
