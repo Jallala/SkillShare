@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
-
+# Create your models here.
 from . import abc
 
 if TYPE_CHECKING:
