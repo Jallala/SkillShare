@@ -56,13 +56,22 @@ class Message(models.Model):
             'sender': self.sender.id,
             'receiver': self.receiver.id
         }
+    
+    def for_template(self):
+        sender: 'UserProfile' = self.sender
+        receiver: 'UserProfile' = self.receiver
+        return {
+            'message': self.message,
+            'sent_at': self.sent_at.isoformat(),
+            'sender': sender.for_template(),
+            'receiver': receiver.for_template()
+        }
 
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     skills = models.ManyToManyField(Skill)
     ratings = models.ManyToManyField(Rating)
-    messages = models.ManyToManyField(Message)
 
     def send_message(self, other: 'UserProfile | int | User', message: str):
         other = UserProfile.convert_to_user_profile(other)
@@ -84,3 +93,9 @@ class UserProfile(models.Model):
         logger.warning('Could not convert {} into UserProfile',
                        (uid_or_user, ))
         return None
+
+    def for_template(self):
+        return {
+            'id': self.user.id,
+            'username': self.user.username,
+        }

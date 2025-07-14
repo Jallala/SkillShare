@@ -1,9 +1,11 @@
 from django.urls import path
 from skillswap_contact import views
 
-USER_CONTACT = 'skillswap_contact.contact'
-USER_INBOX = 'skillswap_contact.inbox'
+API_USER_MESSAGES = 'skillswap_contact.api.messages'
+API_USER_CONTACT = 'skillswap_contact.api.contact'
+USER_MESSAGES = 'skillswap_contact.messages'
 urlpatterns = [
-    path('inbox/', views.get_inbox, name=USER_INBOX),
-    path('user/<int:uid>/', views.contact_user, name=USER_CONTACT),
+    path('messages/', views.api_messages, name=API_USER_MESSAGES),
+    path('view_messages/', views.messages, name=USER_MESSAGES),
+    path('user/<int:uid>/', views.contact_user, name=API_USER_CONTACT),
 ]
