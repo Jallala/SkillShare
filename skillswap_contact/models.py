@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING
 from django.db import models
 
 if TYPE_CHECKING:
+    from typing import Literal
+    KEYS = Literal['message', 'sent_at', 'sender', 'receiver']
     from django.db.models import QuerySet
 
 logger = logging.getLogger(__name__)
@@ -22,7 +24,7 @@ class Message(models.Model):
     message = models.TextField(max_length=4096)
     sent_at = models.DateTimeField('Sent at', auto_now_add=True)
 
-    def as_dict(self):
+    def as_dict(self) -> 'dict[KEYS, str]':
         return {
             'message': self.message,
             'sent_at': self.sent_at.isoformat(),
@@ -30,7 +32,7 @@ class Message(models.Model):
             'receiver': self.receiver.id
         }
 
-    def for_template(self):
+    def for_template(self) -> 'dict[KEYS, str | dict[str, str]]':
         sender: 'Messages' = self.sender
         receiver: 'Messages' = self.receiver
         return {
@@ -45,7 +47,7 @@ class Messages(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     messages = models.ManyToManyField(Message)
 
-    def send_message(self, other: 'Messages | int | User', message: str):
+    def send_message(self, other: 'Messages | int | User', message: str) -> 'Message':
         other = Messages.convert_to_messages(other)
         if other is not None:
             message = Message(sender=self, receiver=other, message=message)
@@ -62,8 +64,8 @@ class Messages(models.Model):
             return Messages.objects.get(user=uid_or_user)
         elif isinstance(uid_or_user, cls):
             return uid_or_user
-        logger.warning('Could not convert {} into UserProfile',
-                       (uid_or_user, ))
+        logger.warning('Could not convert {} into {}',
+                       (uid_or_user, cls.__name__))
         return None
 
     def for_template(self):
