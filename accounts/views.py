@@ -30,7 +30,8 @@ def signup_view(request):
 
 @login_required
 def profile_view(request):
-    profile = request.user.profile
+    user: 'User' = request.user
+    profile: 'Profile' = Profile.objects.get(user=user)
     return render(request, 'accounts/profile.html', {
         'profile': profile,
         'user_is_owner': request.user == profile.user
@@ -39,8 +40,9 @@ def profile_view(request):
 
 @login_required
 def edit_profile(request):
-    user = request.user
-    profile = user.profile
+    user: 'User' = request.user
+    profile: 'Profile' = Profile.objects.get(user=user)
+
 
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=user)

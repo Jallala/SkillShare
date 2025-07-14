@@ -49,6 +49,24 @@ class Message(models.Model):
 
 
 class UserProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
+    skills_needed = models.CharField(max_length=255, blank=True)
+    skills_offered = models.CharField(max_length=255, blank=True)
     skills = models.ManyToManyField(Skill)
     ratings = models.ManyToManyField(Rating)
-    messages = models.ManyToManyField(Message)
+    @classmethod
+    def convert_to_user_profile(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile | None':
+        if isinstance(uid_or_user, (int, User)):
+            return UserProfile.objects.get(user=uid_or_user)
+        elif isinstance(uid_or_user, cls):
+            return uid_or_user
+        logger.warning('Could not convert {} into UserProfile',
+                       (uid_or_user, ))
+        return None
+
+    def for_template(self):
+        return {
+            'id': self.user.id,
+            'username': self.user.username,
+        }
