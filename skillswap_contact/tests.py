@@ -31,9 +31,9 @@ class ContactTestCase(TestCase):
         return user_profile
 
     def setUp(self):
-        self.sender = models.Messages.get_messages_from(self._create_user_with_profile())
-        self.receiver = models.Messages.get_messages_from(self._create_user_with_profile())
-        self.other = models.Messages.get_messages_from(self._create_user_with_profile())
+        self.sender = models.Messages.get_messages_for(self._create_user_with_profile())
+        self.receiver = models.Messages.get_messages_for(self._create_user_with_profile())
+        self.other = models.Messages.get_messages_for(self._create_user_with_profile())
 
         self.message = self.sender.send_message(self.receiver, 'Hello')
         return super().setUp()

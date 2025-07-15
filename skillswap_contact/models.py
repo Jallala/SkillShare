@@ -48,7 +48,7 @@ class Messages(models.Model):
     messages = models.ManyToManyField(Message)
 
     def send_message(self, other: 'Messages | int | User | UserProfile', text: str) -> 'Message':
-        other = Messages.get_messages_from(other)
+        other = Messages.get_messages_for(other)
         if other is not None:
             message = Message(sender=self, receiver=other, message=text)
             message.save()
@@ -61,7 +61,7 @@ class Messages(models.Model):
         return self.messages.order_by('sent_at')
 
     @classmethod
-    def get_messages_from(cls, uid_or_user: 'Messages | int | User | UserProfile') -> 'Messages | None':
+    def get_messages_for(cls, uid_or_user: 'Messages | int | User | UserProfile') -> 'Messages | None':
         messages = None
         user = None
         if isinstance(uid_or_user, cls):
