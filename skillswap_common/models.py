@@ -48,15 +48,20 @@ class UserProfile(models.Model):
     skills_offered = models.CharField(max_length=255, blank=True)
     skills = models.ManyToManyField(Skill)
     ratings = models.ManyToManyField(Rating)
+
     @classmethod
-    def convert_to_user_profile(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile | None':
-        if isinstance(uid_or_user, (int, User)):
-            return UserProfile.objects.get(user=uid_or_user)
-        elif isinstance(uid_or_user, cls):
+    def get_user_profile_from(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile':
+        if isinstance(uid_or_user, cls):
             return uid_or_user
-        logger.warning('Could not convert {} into UserProfile',
-                       (uid_or_user, ))
-        return None
+        elif isinstance(uid_or_user, int):
+            try:
+                user = User.objects.get(pk=uid_or_user)
+            except User.DoesNotExist as ex:
+                raise UserProfile.DoesNotExist('User does not exist') from ex
+            return UserProfile.objects.get(user=user)
+
+        assert uid_or_user in User.objects
+        return UserProfile.objects.get(user=uid_or_user)
 
     def for_template(self):
         return {
