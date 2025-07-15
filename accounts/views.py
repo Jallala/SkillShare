@@ -6,6 +6,7 @@ from .models import Profile
 from .forms import ProfileForm, UserForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
+from skillswap_app.models import Skill
 
 
 from django.conf import settings
@@ -28,17 +29,25 @@ def signup_view(request):
     return render(request, 'accounts/signup.html', {'form': form})
 
 
-@login_required
+#@login_required
 def profile_view(request):
+    profile = request.user.profile
+    skills_offered = Skill.objects.filter(user=request.user, type='offer')
+    skills_needed = Skill.objects.filter(user=request.user, type='request')
+
+
     user: 'User' = request.user
     profile: 'Profile' = Profile.objects.get(user=user)
+
     return render(request, 'accounts/profile.html', {
         'profile': profile,
-        'user_is_owner': request.user == profile.user
+        'user_is_owner': request.user == profile.user,
+        'skills_offered': skills_offered,
+        'skills_needed': skills_needed,
     })
 
 
-@login_required
+#@login_required
 def edit_profile(request):
     user: 'User' = request.user
     profile: 'Profile' = Profile.objects.get(user=user)
