@@ -2,26 +2,57 @@ from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
 from . import abc
+import logging
 
-class SkillCategory(models.Model):
-    name = models.CharField(max_length=256)
 
+
+# Start : Code added by punam 
+class Category(models.Model):
+    category_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.category_name
 
 class Skill(models.Model):
-    OFFER = 'O'
-    REQUEST = 'R'
-    TYPE = {
-        OFFER: 'Offer',
-        REQUEST: 'Request'
-    }
-    user = models.ForeignKey(
-        'UserProfile', on_delete=models.CASCADE, related_name='+')
-    title = models.CharField(max_length=256, blank=False)
-    description = models.TextField(max_length=4096)
-    availability = models.BooleanField(default=True)
-    location = models.CharField(max_length=256)
-    skill_type = models.CharField(max_length=1, choices=TYPE, default=OFFER)
-    category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE)
+    TYPE_CHOICES = [
+        ('offer', 'Offer'),
+        ('request', 'Request'),
+    ]
+
+    title = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    description = models.CharField(max_length=500)
+    availability = models.BooleanField()
+    location = models.CharField(max_length=50)
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} {self.description} ({self.get_type_display()})"
+
+# End
+
+# class SkillCategory(models.Model):
+#     name = models.CharField(max_length=256)
+
+
+# class Skill(models.Model):
+#     OFFER = 'O'
+#     REQUEST = 'R'
+#     TYPE = {
+#         OFFER: 'Offer',
+#         REQUEST: 'Request'
+#     }
+#     user = models.ForeignKey(
+#         'UserProfile', on_delete=models.CASCADE, related_name='+')
+#     title = models.CharField(max_length=256, blank=False)
+#     description = models.TextField(max_length=4096)
+#     availability = models.BooleanField(default=True)
+#     location = models.CharField(max_length=256)
+#     skill_type = models.CharField(max_length=1, choices=TYPE, default=OFFER)
+#     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE)
 
 
 class Rating(models.Model):
@@ -47,7 +78,6 @@ class Message(models.Model):
             'reciever': self.reciever.id
         }
 
-
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
@@ -61,6 +91,8 @@ class UserProfile(models.Model):
             return UserProfile.objects.get(user=uid_or_user)
         elif isinstance(uid_or_user, cls):
             return uid_or_user
+        
+        logger = logging.getLogger(__name__)
         logger.warning('Could not convert {} into UserProfile',
                        (uid_or_user, ))
         return None

@@ -6,7 +6,7 @@ from .models import Profile
 from .forms import ProfileForm, UserForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
-from skillswap_app.models import Skill
+from skillswap_common.models import Skill
 
 
 from django.conf import settings

@@ -1,5 +1,6 @@
 from skillswap_common.models import UserProfile as Profile
-
+from django.db import models
+from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -9,4 +10,3 @@ class Profile(models.Model):
         return f"{self.user.username}'s Profile"
 
 __all__ = ['Profile']
-
