@@ -69,7 +69,7 @@ class Message(models.Model):
         'UserProfile', on_delete=models.CASCADE, related_name='+')
     reciever = models.ForeignKey(
         'UserProfile', on_delete=models.CASCADE, related_name='+')
-    
+
     def as_dict(self):
         return {
             'message': self.message,
@@ -79,12 +79,13 @@ class Message(models.Model):
         }
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     skills_needed = models.CharField(max_length=255, blank=True)
     skills_offered = models.CharField(max_length=255, blank=True)
     skills = models.ManyToManyField(Skill)
     ratings = models.ManyToManyField(Rating)
+
     @classmethod
     def convert_to_user_profile(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile | None':
         if isinstance(uid_or_user, (int, User)):
