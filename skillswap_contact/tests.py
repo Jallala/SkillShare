@@ -8,7 +8,7 @@ from . import models, urls
 
 class ContactTestCase(TestCase):
     counter = 1
-    users: 'list[tuple[User, models.Messages]]' = []
+    users: 'list[tuple[User, models.UserProfile]]' = []
     message = None
     sender = None
     receiver = None
@@ -24,16 +24,16 @@ class ContactTestCase(TestCase):
         self.auth[self.counter] = auth
         user = User.objects.create_user(**auth)
         user.save()
-        user_profile = models.Messages.objects.create(user=user)
+        user_profile = models.UserProfile.objects.create(user=user)
         user_profile.save()
         self.users.append((user, user_profile))
         self.counter += 1
         return user_profile
 
     def setUp(self):
-        self.sender = self._create_user_with_profile()
-        self.receiver = self._create_user_with_profile()
-        self.other = self._create_user_with_profile()
+        self.sender = models.Messages.get_messages_from(self._create_user_with_profile())
+        self.receiver = models.Messages.get_messages_from(self._create_user_with_profile())
+        self.other = models.Messages.get_messages_from(self._create_user_with_profile())
 
         self.message = self.sender.send_message(self.receiver, 'Hello')
         return super().setUp()

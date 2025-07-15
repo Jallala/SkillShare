@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from typing import TYPE_CHECKING
+from skillswap_common.models import UserProfile
 from .models import Messages, Message
 
 logger = logging.getLogger(__name__)
@@ -15,15 +16,17 @@ if TYPE_CHECKING:
 
 TEMPLATE_MESSAGES_PAGE = 'skillswap/messages.html'
 
+
 @login_required
 def contact_user(request: 'HttpRequest', uid: int) -> HttpResponse:
     try:
         user = request.user
         if request.method == 'POST':
+            print(request.POST)
             message = request.POST['message']
-            messages = Messages.objects.get(user=user)
-            send_request_to = Messages.objects.get(pk=uid)
-            messages.send_message(send_request_to, message=message)
+            messages = Messages.get_messages_from(user)
+            send_request_to = UserProfile.objects.get(user=uid)
+            messages.send_message(send_request_to, text=message)
     except (KeyError, ValueError):
         # TODO Check text length, and that both users exist
         logger.exception('Error sending message')
