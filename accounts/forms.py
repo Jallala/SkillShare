@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile
+from skillswap_common.models import UserProfile as Profile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
