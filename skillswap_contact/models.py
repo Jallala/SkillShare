@@ -1,6 +1,4 @@
 from django.db import models
-
-from django.db.models import Q
 from django.contrib.auth.models import User
 
 import logging
@@ -60,7 +58,7 @@ class Messages(models.Model):
         assert False
 
     def get_messages(self) -> 'QuerySet[Message]':
-        return Message.objects.filter(Q(receiver=self) | Q(sender=self)).order_by('sent_at')
+        return self.messages.order_by('sent_at')
 
     @classmethod
     def get_messages_from(cls, uid_or_user: 'Messages | int | User | UserProfile') -> 'Messages | None':
@@ -71,8 +69,8 @@ class Messages(models.Model):
         elif isinstance(uid_or_user, int):
             try:
                 user = User.objects.get(pk=uid_or_user)
-            except User.DoesNotExist:
-                raise Messages.DoesNotExist('User does not exist')
+            except User.DoesNotExist as ex:
+                raise Messages.DoesNotExist('User does not exist') from ex
             return Messages.objects.get(user=user)
 
         if isinstance(uid_or_user, UserProfile):
