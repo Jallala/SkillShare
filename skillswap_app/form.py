@@ -1,5 +1,5 @@
 from django import forms
-from .models import Skill
+from skillswap_common.models import Skill
 
 class SkillForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
