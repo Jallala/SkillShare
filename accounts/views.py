@@ -22,7 +22,7 @@ def signup_view(request):
     return render(request, 'accounts/signup.html', {'form': form})
 
 
-@login_required
+#@login_required
 def profile_view(request):
     profile = request.user.profile
     return render(request, 'accounts/profile.html', {
@@ -31,7 +31,7 @@ def profile_view(request):
     })
 
 
-@login_required
+#@login_required
 def edit_profile(request):
     user = request.user
     profile = user.profile
