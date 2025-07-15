@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+import logging
 # Create your models here.
 from . import abc
+
+logger = logging.getLogger(__name__)
 
 
 class SkillCategory(models.Model):
