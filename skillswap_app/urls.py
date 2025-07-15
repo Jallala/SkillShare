@@ -3,5 +3,6 @@ from skillswap_app import views
 
 
 urlpatterns = [
-    path('skills', views.index, name='index'), 
+    path('skills', views.create_skill, name='create_skill'),
 ]
+

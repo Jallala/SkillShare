@@ -1,5 +1,4 @@
-from django.db import models
-from django.contrib.auth.models import User
+from skillswap_common.models import UserProfile as Profile
 
 
 class Profile(models.Model):
@@ -8,3 +7,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
+
+__all__ = ['Profile']
+

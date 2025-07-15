@@ -29,11 +29,15 @@ def signup_view(request):
     return render(request, 'accounts/signup.html', {'form': form})
 
 
-@login_required
+#@login_required
 def profile_view(request):
     profile = request.user.profile
     skills_offered = Skill.objects.filter(user=request.user, type='offer')
     skills_needed = Skill.objects.filter(user=request.user, type='request')
+
+
+    user: 'User' = request.user
+    profile: 'Profile' = Profile.objects.get(user=user)
 
     return render(request, 'accounts/profile.html', {
         'profile': profile,
@@ -43,10 +47,11 @@ def profile_view(request):
     })
 
 
-@login_required
+#@login_required
 def edit_profile(request):
-    user = request.user
-    profile = user.profile
+    user: 'User' = request.user
+    profile: 'Profile' = Profile.objects.get(user=user)
+
 
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=user)
