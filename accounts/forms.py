@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile
+from skillswap_common.models import UserProfile as Profile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -37,7 +37,7 @@ class UserForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['bio', 'skills_offered', 'skills_needed']
+        fields = ['bio']
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)

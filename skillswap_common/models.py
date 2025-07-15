@@ -42,7 +42,7 @@ class Rating(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     skills_needed = models.CharField(max_length=255, blank=True)
     skills_offered = models.CharField(max_length=255, blank=True)

@@ -2,10 +2,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Profile
 from .forms import ProfileForm, UserForm
 from django.contrib import messages
 from .forms import CustomUserCreationForm
+from skillswap_app.models import Skill
+from skillswap_common.models import UserProfile
 
 
 from django.conf import settings
@@ -17,7 +18,7 @@ def signup_view(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Profile.objects.create(user=user)
+            UserProfile.objects.create(user=user)
             messages.success(
                 request, 'Account created successfully! Now complete your profile.'
             )
@@ -30,19 +31,22 @@ def signup_view(request):
 
 @login_required
 def profile_view(request):
-    user: 'User' = request.user
-    profile: 'Profile' = Profile.objects.get(user=user)
+    profile = UserProfile.objects.get(user=request.user)
+    skills_offered = Skill.objects.filter(user=profile.user, type='O')
+    skills_needed = Skill.objects.filter(user=profile.user, type='R')
+
     return render(request, 'accounts/profile.html', {
         'profile': profile,
-        'user_is_owner': request.user == profile.user
+        'user_is_owner': True,
+        'skills_offered': skills_offered,
+        'skills_needed': skills_needed,
     })
 
 
 @login_required
 def edit_profile(request):
     user: 'User' = request.user
-    profile: 'Profile' = Profile.objects.get(user=user)
-
+    profile = UserProfile.objects.get(user=request.user)
 
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=user)
