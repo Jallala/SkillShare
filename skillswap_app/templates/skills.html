@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<div class="container d-flex justify-content-center align-items-center">
+    <div class="bg-white shadow p-4"
+        style="border-radius: 15px; max-width: 700px; width: 100%; height: 700px; overflow-y: auto;">
+
+        <form method="post" class="mx-auto" style="max-width: 500px;">
+            {% csrf_token %}
+            <h3 class="mb-4 text-center"><b>Add your skills here</b></h3>
+            {% if messages %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {{ form.non_field_errors }}
+
+            <div class="mb-3">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+            <div class="mb-3">
+                {{ form.category.label_tag }}
+                {{ form.category }}
+                {{ form.category.errors }}
+            </div>
+            <div class="mb-3">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+            <div class="mb-3">
+                {{ form.type.label_tag }}
+                {{ form.type }}
+                {{ form.type.errors }}
+            </div>
+            <div class="mb-3 form-check">
+                {{ form.availability }}
+                {{ form.availability.label_tag }}
+                {{ form.availability.errors }}
+            </div>
+            <div class="mb-3">
+                {{ form.location.label_tag }}
+                {{ form.location }}
+                {{ form.location.errors }}
+            </div>
+
+            <button type="submit" class="btn btn-custom w-100" style="background-color: #0097b2;">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
