@@ -1,0 +1,77 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container py-5">
+  <div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+      <input
+        type="text"
+        placeholder="What skills are you looking for?"
+        class="form-control form-control-lg"
+      />
+    </div>
+    <div class="col-md-4">
+      <select class="form-select form-select-lg">
+        <option selected disabled>Category</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}">{{ category.category_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="row gy-4">
+    {% for skill in skills %}
+    <div class="col-md-4">
+      <div class="border rounded p-4 h-100">
+        <h5>{{ skill.title }}</h5>
+        <p>{{ skill.description }}</p>
+        <p>
+          <strong>Category:</strong>
+          {{ skill.category.category_name }}
+        </p>
+        <p>
+          <strong>Availability:</strong>
+          {% if skill.availability %}
+          <span class="badge bg-success">Available</span>
+          {% else %}
+          <span class="badge bg-secondary">Unavailable</span>
+          {% endif %}
+        </p>
+
+        <div class="d-flex align-items-center mt-3">
+          <img
+            src="{% static 'images/avatar.png' %}"
+            class="rounded-circle me-2"
+            style="width: 40px; height: 40px;"
+            alt="User photo"
+          />
+          <div>
+            <strong>
+              {{ skill.user.first_name }} {{ skill.user.last_name }}
+            </strong>
+            <br />
+            <span class="text-warning">★★★★☆</span>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <strong>About</strong>
+          <br />
+          <p class="mb-2">
+            {{ skill.user.userprofile.bio|default:"No bio provided." }}
+          </p>
+        </div>
+
+        {% if skill.availability %}
+        <div class="d-flex justify-content-center gap-4 mt-2">
+          <a href="#" class="btn btn-custom w-25">View</a>
+          <a href="#" class="btn btn-outline-secondary w-25">Contact</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p>No skills found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
