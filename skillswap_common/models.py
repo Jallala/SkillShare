@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from . import abc
 import logging
-
+logger = logging.getLogger(__name__)
 
 
 class Category(models.Model):
@@ -10,6 +10,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
+
 
 class Skill(models.Model):
     TYPE_CHOICES = [
@@ -29,7 +30,7 @@ class Skill(models.Model):
 
     def __str__(self):
         return f"{self.title} {self.description} ({self.get_type_display()})"
-    
+
 
 class Rating(models.Model):
     name = models.CharField(max_length=256, blank=False)
@@ -54,6 +55,7 @@ class Message(models.Model):
             'reciever': self.reciever.id
         }
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
@@ -68,7 +70,7 @@ class UserProfile(models.Model):
             return UserProfile.objects.get(user=uid_or_user)
         elif isinstance(uid_or_user, cls):
             return uid_or_user
-        
+
         logger = logging.getLogger(__name__)
         logger.warning('Could not convert {} into UserProfile',
                        (uid_or_user, ))
