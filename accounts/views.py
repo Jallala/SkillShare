@@ -32,8 +32,8 @@ def signup_view(request):
 @login_required
 def profile_view(request):
     profile = UserProfile.objects.get(user=request.user)
-    skills_offered = Skill.objects.filter(user=profile.user, type='O')
-    skills_needed = Skill.objects.filter(user=profile.user, type='R')
+    skills_offered = Skill.objects.filter(user=profile.user, type='offer')
+    skills_needed = Skill.objects.filter(user=profile.user, type='request')
 
     return render(request, 'accounts/profile.html', {
         'profile': profile,
