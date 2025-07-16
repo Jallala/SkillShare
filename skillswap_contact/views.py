@@ -13,13 +13,12 @@ if TYPE_CHECKING:
     from django.http import HttpRequest
     from django.db.models import QuerySet
 
+TEMPLATE_CHAT_PAGE = 'skillswap/chat.html'
 TEMPLATE_MESSAGES_PAGE = 'skillswap/messages.html'
-
 
 def _send_message(user: 'User', to_uid: int, message: str):
     messages = Messages.get_messages_for(user)
-    send_request_to = UserProfile.get_user_profile_from(to_uid)
-    messages.send_message(send_request_to, text=message)
+    messages.send_message(to_uid, text=message)
 
 
 @login_required
@@ -51,12 +50,29 @@ def api_messages(request: 'HttpRequest') -> HttpResponse:
 @login_required
 def messages(request: 'HttpRequest') -> HttpResponse:
     messages = _get_messages(request)
+    chats = {}
+    for message in messages.order_by('-sent_at'):
+        to_other: 'Messages' = message.receiver if message.receiver is not messages else message.sender
+        if to_other.id not in chats:
+            chats[to_other.id] = {
+                'chat_with': to_other.user.username,
+                'last_message': message.for_template()
+            }
+    return render(request, TEMPLATE_MESSAGES_PAGE, context={'chats': chats, 'chat_base_url': 'skillswap_contact.chat'})
+
+
+@login_required
+def chat_with_user(request: 'HttpRequest', uid: int) -> HttpResponse:
+    all_messages = Messages.get_messages_for(request.user)
+    other_user = UserProfile.objects.get(user=uid)
+    messages_with_user = all_messages.get_chat_log_with(uid)
     if request.method == 'POST':
-        username = request.POST['username']
-        user = User.objects.get(username=username)
-        uid = user.id
         try:
             contact_user(request, uid)
         except (KeyError, ValueError, UserProfile.DoesNotExist):
             raise
-    return render(request, TEMPLATE_MESSAGES_PAGE, context={'messages': [m.for_template() for m in messages]})
+    context = {
+        'chat': [m.for_template() for m in messages_with_user],
+        'other': other_user.for_template()
+    }
+    return render(request, TEMPLATE_CHAT_PAGE, context=context)
