@@ -5,8 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from typing import TYPE_CHECKING
-from skillswap_common.models import UserProfile
-from .models import Messages, Message
+from skillswap_common.models import UserProfile, Message, Messages
 
 logger = logging.getLogger(__name__)
 
