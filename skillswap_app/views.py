@@ -3,12 +3,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .form import SkillForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from skillswap_common.models import Skill
-
+from skillswap_common.models import Skill, Category
 from skillswap_app import form
 
 
-#@login_required
 def create_skill(request):
     if request.method == 'POST':
         form = SkillForm(request.POST)
@@ -18,11 +16,11 @@ def create_skill(request):
                 skill.user = request.user
                 skill.save()
                 messages.success(request, 'Skill saved successfully!')
-                return redirect('create_skill')  # Replace with your skill list view name
-            except Exception as e:
-                messages.error(request, f'Error saving skill: {str(e)}')
-        else:
-            messages.error(request, 'Please correct the errors below.')
+                return redirect('create_skill')  # Or wherever you want
+            except:
+                messages.error(
+                    request, 'Form submission failed. Please save again.')
+                return redirect('create_skill')  # Or wherever you want
     else:
         form = SkillForm()
 
@@ -62,4 +60,11 @@ def delete_skill(request, skill_id):
             'form': form,
             'is_edit': True,
             'skill': skill  # Needed for delete URL
+    })
+def search_skills_view(request):
+    categories = Category.objects.all()
+    skills = Skill.objects.all()
+    return render(request, 'search.html', {
+        'categories': categories,
+        'skills': skills,
     })

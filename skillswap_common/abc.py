@@ -20,11 +20,6 @@ class SkillCategory(ABC):
 class Skill(ABC):
     @property
     @abstractmethod
-    def title(self) -> str:
-        pass
-
-    @property
-    @abstractmethod
     def user(self) -> 'User':
         pass
 

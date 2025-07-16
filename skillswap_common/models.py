@@ -1,8 +1,17 @@
-from django.db import models
-from django.contrib.auth.models import User
-from . import abc
 import logging
+from typing import TYPE_CHECKING
 
+from django.db import models
+from django.db.models import Q
+from django.contrib.auth.models import User
+
+
+if TYPE_CHECKING:
+    from typing import Literal
+    KEYS = Literal['message', 'sent_at', 'sender', 'receiver']
+    from django.db.models import QuerySet
+
+logger = logging.getLogger(__name__)
 
 
 class Category(models.Model):
@@ -10,6 +19,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
+
 
 class Skill(models.Model):
     TYPE_CHOICES = [
@@ -29,7 +39,7 @@ class Skill(models.Model):
 
     def __str__(self):
         return f"{self.title} {self.description} ({self.get_type_display()})"
-    
+
 
 class Rating(models.Model):
     name = models.CharField(max_length=256, blank=False)
@@ -37,22 +47,6 @@ class Rating(models.Model):
     rated_by = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
-
-class Message(models.Model):
-    message = models.TextField(max_length=4096)
-    sent_at = models.DateTimeField('Sent at', auto_now_add=True)
-    sender = models.ForeignKey(
-        'UserProfile', on_delete=models.CASCADE, related_name='+')
-    reciever = models.ForeignKey(
-        'UserProfile', on_delete=models.CASCADE, related_name='+')
-
-    def as_dict(self):
-        return {
-            'message': self.message,
-            'sent_at': self.sent_at.isoformat(),
-            'sender': self.sender.id,
-            'reciever': self.reciever.id
-        }
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -63,16 +57,94 @@ class UserProfile(models.Model):
     ratings = models.ManyToManyField(Rating)
 
     @classmethod
-    def convert_to_user_profile(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile | None':
-        if isinstance(uid_or_user, (int, User)):
-            return UserProfile.objects.get(user=uid_or_user)
-        elif isinstance(uid_or_user, cls):
+    def get_user_profile_from(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile':
+        if isinstance(uid_or_user, cls):
             return uid_or_user
-        
-        logger = logging.getLogger(__name__)
-        logger.warning('Could not convert {} into UserProfile',
-                       (uid_or_user, ))
-        return None
+        elif isinstance(uid_or_user, int):
+            try:
+                user = User.objects.get(pk=uid_or_user)
+            except User.DoesNotExist as ex:
+                raise UserProfile.DoesNotExist('User does not exist') from ex
+            return UserProfile.objects.get(user=user)
+
+        assert uid_or_user in User.objects
+        return UserProfile.objects.get(user=uid_or_user)
+
+    def for_template(self):
+        return {
+            'id': self.user.id,
+            'username': self.user.username,
+        }
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(
+        'Messages', on_delete=models.CASCADE, related_name='+')
+    receiver = models.ForeignKey(
+        'Messages', on_delete=models.CASCADE, related_name='+')
+    message = models.TextField(max_length=4096)
+    sent_at = models.DateTimeField('Sent at', auto_now_add=True)
+
+    def as_dict(self) -> 'dict[KEYS, str]':
+        return {
+            'message': self.message,
+            'sent_at': self.sent_at.isoformat(),
+            'sender': self.sender.id,
+            'receiver': self.receiver.id
+        }
+
+    def for_template(self) -> 'dict[KEYS, str | dict[str, str]]':
+        sender: 'Messages' = self.sender
+        receiver: 'Messages' = self.receiver
+        return {
+            'message': self.message,
+            'sent_at': self.sent_at.isoformat(),
+            'sender': sender.for_template(),
+            'receiver': receiver.for_template()
+        }
+
+
+class Messages(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    messages = models.ManyToManyField(Message)
+
+    def send_message(self, other: 'Messages | int | User | UserProfile', text: str) -> 'Message':
+        other = Messages.get_messages_for(other)
+        if other is not None:
+            message = Message(sender=self, receiver=other, message=text)
+            message.save()
+            self.messages.add(message)
+            other.messages.add(message)
+            return message
+        assert False
+
+    def get_messages(self) -> 'QuerySet[Message]':
+        return self.messages.order_by('sent_at')
+
+    @classmethod
+    def get_messages_for(cls, uid_or_user: 'Messages | int | User | UserProfile') -> 'Messages | None':
+        messages = None
+        user = None
+        if isinstance(uid_or_user, cls):
+            return uid_or_user
+        elif isinstance(uid_or_user, int):
+            try:
+                user = User.objects.get(pk=uid_or_user)
+            except User.DoesNotExist as ex:
+                raise Messages.DoesNotExist('User does not exist') from ex
+            return Messages.objects.get(user=user)
+
+        if isinstance(uid_or_user, UserProfile):
+            user = uid_or_user.user
+        elif isinstance(uid_or_user, User):
+            user = uid_or_user
+        if not user:
+            logger.warning('Could not convert {} into {}',
+                           uid_or_user, cls.__name__)
+            raise Messages.DoesNotExist('User does not exist')
+
+        messages, _ = Messages.objects.get_or_create(user=user)
+        return messages
 
     def for_template(self):
         return {

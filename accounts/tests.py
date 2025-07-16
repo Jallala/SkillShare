@@ -1,8 +1,9 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from skillswap_common.models import UserProfile
+
 from . import views, urls
-from . models import Profile
 # Create your tests here.
 
 
@@ -20,7 +21,7 @@ class AccountsTestCase(TestCase):
 
         resp = client.post(reverse(urls.SIGNUP), data=post_data)
         user = User.objects.get(username=username)
-        profile = Profile.objects.get(user=user)
+        profile = UserProfile.objects.get(user=user)
         self.assertTrue(user, 'User should exist')
         self.assertTrue(profile, 'User should have a profile')
         self.assertEqual(user.username, username)
