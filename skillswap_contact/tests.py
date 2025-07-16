@@ -2,7 +2,8 @@ from django.test import TestCase, Client
 from unittest import skip
 from django.contrib.auth.models import User
 from django.urls import reverse
-from . import models, urls
+from skillswap_common import models
+from . import urls
 # Create your tests here.
 
 
