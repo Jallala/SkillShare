@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'search',
     'accounts',
     'skillswap_app',
+    'skillswap_contact',
 ]
 
 MIDDLEWARE = [
