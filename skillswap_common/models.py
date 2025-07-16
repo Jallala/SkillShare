@@ -103,13 +103,15 @@ class Message(models.Model):
             'receiver': receiver.for_template()
         }
 
+    def __str__(self):
+        return f'{self.sender} -> {self.receiver}: {self.message}'
 
 class Messages(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     messages = models.ManyToManyField(Message)
 
     def send_message(self, other: 'Messages | int | User | UserProfile', text: str) -> 'Message':
-        other = Messages.get_messages_for(other)
+        other: 'Messages' = Messages.get_messages_for(other)
         if other is not None:
             message = Message(sender=self, receiver=other, message=text)
             message.save()
@@ -120,6 +122,11 @@ class Messages(models.Model):
 
     def get_messages(self) -> 'QuerySet[Message]':
         return self.messages.order_by('sent_at')
+    
+    def get_chat_log_with(self, uid: int):
+        other = User.objects.get(pk=uid)
+        other_messages, _ = Messages.objects.get_or_create(user=other)
+        return self.messages.filter(Q(receiver=other_messages) | Q(sender=other_messages)).order_by('sent_at')
 
     @classmethod
     def get_messages_for(cls, uid_or_user: 'Messages | int | User | UserProfile') -> 'Messages | None':
@@ -151,3 +158,6 @@ class Messages(models.Model):
             'id': self.user.id,
             'username': self.user.username,
         }
+
+    def __str__(self):
+        return f'Messages for {self.user.username}'

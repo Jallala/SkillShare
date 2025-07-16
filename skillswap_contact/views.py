@@ -18,8 +18,7 @@ TEMPLATE_MESSAGES_PAGE = 'skillswap/messages.html'
 
 def _send_message(user: 'User', to_uid: int, message: str):
     messages = Messages.get_messages_for(user)
-    send_request_to = UserProfile.get_user_profile_from(to_uid)
-    messages.send_message(send_request_to, text=message)
+    messages.send_message(to_uid, text=message)
 
 
 @login_required
@@ -59,4 +58,15 @@ def messages(request: 'HttpRequest') -> HttpResponse:
             contact_user(request, uid)
         except (KeyError, ValueError, UserProfile.DoesNotExist):
             raise
-    return render(request, TEMPLATE_MESSAGES_PAGE, context={'messages': [m.for_template() for m in messages]})
+    return render(request, TEMPLATE_MESSAGES_PAGE, context={'chat': [m.for_template() for m in messages]})
+
+
+@login_required
+def chat_with_user(request: 'HttpRequest', uid: int) -> HttpResponse:
+    all_messages = Messages.get_messages_for(request.user)
+    if request.method == 'POST':
+        try:
+            contact_user(request, uid)
+        except (KeyError, ValueError, UserProfile.DoesNotExist):
+            raise
+    return render(request, TEMPLATE_MESSAGES_PAGE, context={'chat': [m.for_template() for m in all_messages]})

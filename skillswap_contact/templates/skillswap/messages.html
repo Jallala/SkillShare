@@ -5,7 +5,7 @@
 
 <div class="d-flex flex-column justify-content-center align-items-center vh-90">
   <div class="text-center mb-4">
-    {% for message in messages %}
+    {% for message in chat %}
         <div class="text-center mb-4">
             <p class="text">{{ message.sender.username }}</p><p class="text-muted">{{ message.message }}</p>
         </div>
