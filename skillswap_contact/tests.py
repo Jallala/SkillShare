@@ -74,11 +74,6 @@ class ContactTestCase(TestCase):
         self.assertEqual(data['messages'][0]['sender'], self.sender.id)
         self.assertEqual(data['messages'][0]['receiver'], self.receiver.id)
     
-    def test_api_get_inbox(self):
-        client = Client()
-        client.login(**self.auth[self.sender.user.id])
-        request = client.get(reverse(urls.USER_MESSAGES))
-        print(request.content)
 
     # TODO Depends if contacting should be a REST API or not
     @skip('Not ready yet')
