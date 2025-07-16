@@ -47,20 +47,18 @@ def update_skill(request, skill_id):
 
     return render(request, 'skills.html', {'form': form, 'is_edit': True})
 
-
 @login_required
 def delete_skill(request, skill_id):
     skill = get_object_or_404(Skill, id=skill_id, user=request.user)
 
     if request.method == 'POST':
+        print(f"Deleting skill: {skill.id}")  # Debug
         skill.delete()
         messages.success(request, 'Skill deleted successfully!')
+        return redirect('profile')  # <-- make sure 'profile' is your profile URL name
 
-        return render(request, 'skills.html', {
-            'form': form,
-            'is_edit': True,
-            'skill': skill  # Needed for delete URL
-    })
+    return redirect('profile')
+
 def search_skills_view(request):
     categories = Category.objects.all()
     skills = Skill.objects.all()

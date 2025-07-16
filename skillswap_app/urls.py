@@ -6,6 +6,6 @@ urlpatterns = [
     path('skills', views.create_skill, name='create_skill'),
     path('skills/<int:skill_id>/edit/', views.update_skill, name='update_skill'),
     path('skills/<int:skill_id>/delete/', views.delete_skill, name='delete_skill'),
-    path('search/', views.search_skills_view, name='search'),
+    path('', views.search_skills_view, name='search'),
 ]
 
