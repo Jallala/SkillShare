@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from skillswap_common.models import Skill, Category
 from skillswap_app import form
+from django.contrib.auth.models import User
 
 
 def create_skill(request):
@@ -60,9 +61,20 @@ def delete_skill(request, skill_id):
     return redirect('profile')
 
 def search_skills_view(request):
-    categories = Category.objects.all()
-    skills = Skill.objects.all()
+    query = request.GET.get('q', '').strip()
+    users = []
+    skills = []
+    categories = Category.objects.all() 
+
+    if query:
+        users = User.objects.filter(username__icontains=query)
+        skills = Skill.objects.filter(title__icontains=query)
+    else:
+        skills = Skill.objects.all()  
+
     return render(request, 'search.html', {
-        'categories': categories,
+        'users': users,
         'skills': skills,
+        'categories': categories,
+        'query': query
     })
