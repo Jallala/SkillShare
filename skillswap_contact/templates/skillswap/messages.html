@@ -5,40 +5,13 @@
 
 <div class="d-flex flex-column justify-content-center align-items-center vh-90">
   <div class="text-center mb-4">
-    {% for message in chat %}
+    {% for id, chat in chats.items %}
         <div class="text-center mb-4">
-            <p class="text">{{ message.sender.username }}</p><p class="text-muted">{{ message.message }}</p>
+            <a href="{% url chat_base_url id %}">
+              <p class="text">{{ chat.chat_with }}</p><p class="text-muted">{{ chat.last_message.message }}</p>
+           </a>
         </div>
     {% endfor %}
   </div>
-  <form method="post" class="w-100" style="max-width: 330px;">
-    {% csrf_token %}
-
-    <div class="mb-3">
-      <label for="id_username" class="form-label fw-semibold"></label>
-      <input
-        type="text"
-        name="username"
-        class="form-control"
-        placeholder="Username"
-        required
-        id="id_username"
-      />
-    </div>
-    <div class="mb-3">
-      <label for="id_message" class="form-label fw-semibold"></label>
-      <input
-        type="text"
-        name="message"
-        class="form-control"
-        placeholder="Message"
-        required
-        id="id_message"
-      />
-    </div>
-    <button type="submit" class="btn btn-custom w-100 mb-2">
-      Send
-    </button>
-  </form>
 </div>
 {% endblock content %} 

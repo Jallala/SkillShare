@@ -123,7 +123,7 @@ class Messages(models.Model):
     def get_messages(self) -> 'QuerySet[Message]':
         return self.messages.order_by('sent_at')
     
-    def get_chat_log_with(self, uid: int):
+    def get_chat_log_with(self, uid: int) -> 'QuerySet[Message]':
         other = User.objects.get(pk=uid)
         other_messages, _ = Messages.objects.get_or_create(user=other)
         return self.messages.filter(Q(receiver=other_messages) | Q(sender=other_messages)).order_by('sent_at')

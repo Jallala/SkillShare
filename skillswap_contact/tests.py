@@ -43,6 +43,8 @@ class ContactTestCase(TestCase):
 
         self.message_to_1 = self.sender.send_message(self.receiver, 'Hello, nr1')
         self.message_to_2 = self.sender.send_message(self.receiver2, 'Hello, nr2')
+        self.reply_1 = self.receiver.send_message(self.sender, 'Hello, sender from 1')
+        self.reply_2 = self.receiver2.send_message(self.sender, 'Hello, sender from 2')
         return super().setUp()
 
     def test_both_have_the_message(self):
@@ -57,7 +59,12 @@ class ContactTestCase(TestCase):
         self.assertNotIn(self.message_to_1, self.receiver2.get_messages())
 
     def test_get_chat_with_specific_id(self):
-        self.sender.get_chat_log_with(self.receiver2.user.id)
+        chat = self.sender.get_chat_log_with(self.receiver2.user.id)
+        for message in chat:
+            if message.sender == self.receiver2:
+                self.assertTrue(message.receiver == self.sender)
+            else:
+                self.assertTrue(message.receiver == self.receiver2 and message.sender == self.sender)
 
     def test_send_fails_if_user_does_not_exist(self):
         non_exisiting_user_id = max(self.auth.keys()) + 1
