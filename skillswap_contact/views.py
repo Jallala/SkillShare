@@ -38,7 +38,7 @@ def contact_user(request: 'HttpRequest', uid: int) -> HttpResponse:
 def _get_messages(request: 'HttpRequest') -> 'QuerySet[Message]':
     user = request.user
     messages = Messages.get_messages_for(user)
-    return messages.messages.get_queryset()
+    return messages.messages.order_by('sent_at')
 
 
 @login_required
@@ -56,6 +56,7 @@ def messages(request: 'HttpRequest') -> HttpResponse:
         if to_other.id not in chats:
             chats[to_other.id] = {
                 'chat_with': to_other.user.username,
+                'user': request.user,
                 'last_message': message.for_template()
             }
     return render(request, TEMPLATE_MESSAGES_PAGE, context={'chats': chats, 'chat_base_url': 'skillswap_contact.chat'})
@@ -73,6 +74,7 @@ def chat_with_user(request: 'HttpRequest', uid: int) -> HttpResponse:
             raise
     context = {
         'chat': [m.for_template() for m in messages_with_user],
+        'user': request.user,
         'other': other_user.for_template()
     }
     return render(request, TEMPLATE_CHAT_PAGE, context=context)
