@@ -101,3 +101,12 @@ class ContactTestCase(TestCase):
         self.assertEqual(self.sender.id, last_message.sender.id)
         self.assertEqual(self.receiver.id, last_message.receiver.id)
     
+
+
+    def test_send_message_to_own_uid(self):
+        client = Client()
+        client.login(**self.auth[self.sender.user.id])
+        endpoint = reverse(urls.CHAT_WITH_USER, kwargs={'uid': self.sender.user.id})
+        message_text = 'Hello, Requesting Skill'
+        request = client.post(endpoint, data={'message': message_text})
+        self.assertEqual(request.status_code, 400)
