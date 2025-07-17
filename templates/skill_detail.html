@@ -30,8 +30,7 @@
       <p>TODO: Get review!</p>
     </div>
     <div class="d-flex justify-content-center gap-4 mt-4">
-      <!--Add link to message or chat? Should check with Jonatan-->
-      <a href="#" class="btn btn-outline-secondary">Contact/Request</a>
+      <a href="{% url 'skillswap_contact.chat' skill.user.id %}" class="btn btn-outline-secondary">Contact/Request</a>
       <!--Leave a review, Need to check what the review URL is with Kalpana-->
       <a href="#" class="btn btn-outline-primary">Leave a Review</a>
     </div>
