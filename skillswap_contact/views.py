@@ -1,7 +1,7 @@
 import logging
-
+from functools import wraps
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from typing import TYPE_CHECKING
@@ -21,8 +21,13 @@ def _send_message(user: 'User', to_uid: int, message: str):
     messages.send_message(to_uid, text=message)
 
 
+def _request_user_is_same(request: 'HttpRequest', uid: int):
+    return request.user.id == uid
+
 @login_required
 def contact_user(request: 'HttpRequest', uid: int) -> HttpResponse:
+    if _request_user_is_same(request, uid):
+        return HttpResponseBadRequest('Cannot chat with self')
     try:
         user = request.user
         if request.method == 'POST':
@@ -33,12 +38,6 @@ def contact_user(request: 'HttpRequest', uid: int) -> HttpResponse:
         logger.exception('Error sending message')
         return JsonResponse({'success': False})
     return JsonResponse({'success': True})
-
-
-def _get_messages(request: 'HttpRequest') -> 'QuerySet[Message]':
-    user = request.user
-    messages = Messages.get_messages_for(user)
-    return messages.messages.order_by('sent_at')
 
 
 @login_required
@@ -67,6 +66,8 @@ def messages(request: 'HttpRequest') -> HttpResponse:
 
 @login_required
 def chat_with_user(request: 'HttpRequest', uid: int) -> HttpResponse:
+    if _request_user_is_same(request, uid):
+        return HttpResponseBadRequest('Cannot chat with self')
     all_messages = Messages.get_messages_for(request.user)
     to_other = Messages.get_messages_for(uid)
     messages_with_user = all_messages.get_chat_log_with(uid)
