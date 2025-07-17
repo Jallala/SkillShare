@@ -65,7 +65,8 @@ class UserProfile(models.Model):
                 user = User.objects.get(pk=uid_or_user)
             except User.DoesNotExist as ex:
                 raise UserProfile.DoesNotExist('User does not exist') from ex
-            return UserProfile.objects.get(user=user)
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            return profile
 
         assert uid_or_user in User.objects
         return UserProfile.objects.get(user=uid_or_user)

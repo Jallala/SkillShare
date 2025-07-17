@@ -64,7 +64,7 @@ def messages(request: 'HttpRequest') -> HttpResponse:
 @login_required
 def chat_with_user(request: 'HttpRequest', uid: int) -> HttpResponse:
     all_messages = Messages.get_messages_for(request.user)
-    other_user = UserProfile.objects.get(user=uid)
+    other_user = UserProfile.get_user_profile_from(uid)
     messages_with_user = all_messages.get_chat_log_with(uid)
     if request.method == 'POST':
         try:
