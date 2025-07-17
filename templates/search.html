@@ -83,7 +83,12 @@
 
         {% if skill.availability %}
         <div class="d-flex justify-content-center gap-4 mt-2">
-          <a href="#" class="btn btn-custom w-25">View</a>
+          <a
+            href="{% url 'skill_detail' skill.pk %}"
+            class="btn btn-custom w-25"
+          >
+            View
+          </a>
           <a
             href="{% url 'skillswap_contact.chat' skill.user.id %}"
             class="btn btn-outline-primary w-25"
