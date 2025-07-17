@@ -1,3 +1,4 @@
+# SkillShare/skillswap_app/urls.py
 from django.urls import path
 from skillswap_app import views
 
@@ -8,5 +9,6 @@ urlpatterns = [
     path('skills/<int:skill_id>/delete/', views.delete_skill, name='delete_skill'),
     path('', views.search_skills_view, name='search'),
     path('skills/<int:pk>/', views.SkillDetailView.as_view(), name='skill_detail'),
+    
 ]
 

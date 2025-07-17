@@ -1,0 +1,108 @@
+
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow-sm border-0 p-3" style="background-color: #f8f9fa;">
+        <form id="reviewForm" method="post" data-url-template="{% url 'skillswap_review:submit_review' 'USERNAME' 0 %}">
+          {% csrf_token %}
+          <div class="modal-body p-4">
+            <!-- Title -->
+            <h4 class="fw-semibold text-center mb-4" id="modalSkillTitle">Skill Title</h4>
+  
+            <!-- Rating -->
+            <label class="form-label fw-semibold mb-1">Rate</label>
+            <div id="starRating" class="mb-3 fs-4 text-warning">
+              {% for i in "12345"|make_list %}
+                <i class="bi bi-star" data-value="{{ i }}" style="cursor:pointer;"></i>
+              {% endfor %}
+            </div>
+            <input type="hidden" id="ratingValue" name="rating" value="0">
+            
+            <input type="hidden" id="modalSkillId" name="skill_id">
+            <input type="hidden" id="modalRevieweeUsername" name="reviewee_username">
+  
+            <!-- Comment -->
+            <label for="commentTextarea" class="form-label fw-semibold">How was your experience?</label>
+            <textarea class="form-control rounded-3 shadow-sm border-light" id="commentTextarea" name="review" rows="4" required></textarea>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-center gap-3 mt-4">
+              <button type="submit" class="btn btn-info px-4 text-white rounded-pill">Submit</button>
+              <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    console.log("Review modal JS loaded");
+    document.addEventListener('DOMContentLoaded', () => {
+      const reviewModal = document.getElementById('reviewModal');
+      const form = document.getElementById('reviewForm');
+      const urlTemplate = form.dataset.urlTemplate;
+  
+      const modalSkillTitle = document.getElementById('modalSkillTitle');
+      const modalSkillIdInput = document.getElementById('modalSkillId');
+      const modalRevieweeUsername = document.getElementById('modalRevieweeUsername');
+      const ratingValueInput = document.getElementById('ratingValue');
+      const commentTextarea = document.getElementById('commentTextarea');
+      const starRatingDiv = document.getElementById('starRating');
+  
+      function updateStars(rating) {
+        starRatingDiv.querySelectorAll('i').forEach(star => {
+          const value = Number(star.dataset.value);
+          star.classList.toggle('bi-star-fill', value <= rating);
+          star.classList.toggle('bi-star', value > rating);
+        });
+      }
+  
+      reviewModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const username = button.getAttribute('data-reviewee-username');
+        const skillId = button.getAttribute('data-skill-id');
+  
+        // Dynamically set form action
+        form.action = urlTemplate.replace('USERNAME', username).replace('0', skillId);
+        
+  
+        // Fill hidden inputs and reset form
+        modalSkillTitle.textContent = button.getAttribute('data-skill-title');
+        modalSkillIdInput.value = skillId;
+        modalRevieweeUsername.value = username;
+        ratingValueInput.value = '0';
+        commentTextarea.value = '';
+        updateStars(0);
+      });
+  
+      starRatingDiv.addEventListener('click', e => {
+        if (e.target.tagName === 'I') {
+          const rating = Number(e.target.dataset.value);
+          ratingValueInput.value = rating;
+          updateStars(rating);
+        }
+      });
+  
+      starRatingDiv.addEventListener('mousemove', e => {
+        if (e.target.tagName === 'I') {
+          updateStars(Number(e.target.dataset.value));
+        }
+      });
+  
+      starRatingDiv.addEventListener('mouseleave', () => {
+        updateStars(Number(ratingValueInput.value));
+      });
+    });
+    console.log("Review modal JS loaded");
+  
+  
+  </script>
+  
+  
+  
+  
+  
+  
+  
