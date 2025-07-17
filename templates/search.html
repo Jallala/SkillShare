@@ -1,18 +1,20 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 <div class="container py-5">
   <div class="row mb-4 align-items-center">
     <div class="col-md-8">
       <form method="get" action="{% url 'search' %}">
-        <input
-          type="text"
-          name="q"
-          placeholder="What skills are you looking for?"
-          class="form-control form-control-lg"
-          value="{{ query }}"
-        />
-        <button type="submit" class="btn btn-primary mt-2">Search</button>
+        <div class="input-group input-group-lg">
+          <input
+            type="text"
+            name="q"
+            placeholder="What skills are you looking for?"
+            class="form-control form-control-lg"
+            value="{{ query }}"
+          />
+          <button type="submit" class="btn btn-custom">
+            Search
+          </button>
+        </div>
       </form>
     </div>
     <div class="col-md-4">
@@ -24,6 +26,17 @@
       </select>
     </div>
   </div>
+
+  {% if users %}
+  <div class="row mb-4">
+    <h2>Users</h2>
+    <ul>
+      {% for user in users %}
+      <li>{{ user.username }} ({{ user.first_name }} {{ user.last_name }})</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
 
   <div class="row gy-4">
     {% for skill in skills %}
@@ -70,10 +83,13 @@
 
         {% if skill.availability %}
         <div class="d-flex justify-content-center gap-4 mt-2">
-
-          <a href="{% url 'skill_detail' skill.pk %}" class="btn btn-custom w-25">View</a>
-          <a href="{% url 'skillswap_contact.chat' skill.user.id %}" class="btn btn-outline-primary w-25">Chat</a>
-
+          <a href="#" class="btn btn-custom w-25">View</a>
+          <a
+            href="{% url 'skillswap_contact.chat' skill.user.id %}"
+            class="btn btn-outline-primary w-25"
+          >
+            Chat
+          </a>
         </div>
         {% endif %}
       </div>
@@ -83,7 +99,7 @@
     {% endfor %}
   </div>
 
-  {% if not skills and query %}
+  {% if not users and not skills and query %}
   <p>No results found for "{{ query }}".</p>
   {% endif %}
 </div>
