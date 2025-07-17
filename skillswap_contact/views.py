@@ -54,9 +54,8 @@ def messages(request: 'HttpRequest') -> HttpResponse:
     chats = {}
     for message in messages.messages.order_by('-sent_at'):
         to_other: 'Messages' = message.receiver if message.receiver.id != messages.id else message.sender
-        assert to_other is not messages
-        if to_other.id not in chats:
-            chats[to_other.id] = {
+        if to_other.user.id not in chats:
+            chats[to_other.user.id] = {
                 'chat_with': to_other.user.username,
                 'user': request.user,
                 'last_message': message.for_template()
