@@ -37,10 +37,21 @@ class Skill(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.title} {self.description} ({self.get_type_display()})"
+    #for stars
+    def average_rating(self):
+        from .models import Rating
+        avg = Rating.objects.filter(skill=self).aggregate(avg=Avg('rating'))['avg']
+        return round(avg or 0, 1)
 
 
+
+<<<<<<< HEAD
+=======
+
+
+from django.db.models import Avg
+
+>>>>>>> added all reviews/rating  on profile and skills.
 class Rating(models.Model):
     name = models.CharField(max_length=256, blank=False)
     rated_at = models.DateTimeField('Rated At', auto_now_add=True)

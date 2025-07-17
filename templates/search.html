@@ -43,6 +43,10 @@
     <div class="col-md-4">
       <div class="border rounded p-4 h-100">
         <h5>{{ skill.title }}</h5>
+
+
+        
+
         <p>{{ skill.description }}</p>
         <p>
           <strong>Category:</strong>
@@ -69,7 +73,21 @@
               {{ skill.user.first_name }} {{ skill.user.last_name }}
             </strong>
             <br />
-            <span class="text-warning">★★★★☆</span>
+            {% comment %} <span class="text-warning">★★★★☆</span> {% endcomment %}
+
+            <span class="ms-2 text-warning fs-6">  <!-- fs-6 = small -->
+              {% for i in "12345"|make_list %}
+                {% if forloop.counter <= skill.average_rating|default:0 %}
+                  <i class="bi bi-star-fill"></i>
+                {% elif skill.average_rating|default:0 >= forloop.counter0|add:"0.5" %}
+                  <i class="bi bi-star-half"></i>
+                {% else %}
+                  <i class="bi bi-star"></i>
+                {% endif %}
+              {% endfor %}
+            </span>
+            
+            
           </div>
         </div>
 

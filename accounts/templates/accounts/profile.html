@@ -1,9 +1,9 @@
-<!-- prettier-ignore -->
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
 
 <div class="container py-5">
+<<<<<<< HEAD
   <div class="bg-white rounded-4 shadow-sm p-5 d-flex flex-row justify-content-start">
     <div class="d-flex justify-content-between align-items-start mb-3">
       <div class="d-flex flex-column align-items-center text-center me-5">
@@ -20,20 +20,48 @@
         </a>
         {% endif %}
       </div>
+=======
+  <div class="bg-white rounded-4 shadow-sm p-5 d-flex flex-row justify-content-start flex-wrap">
+    <div class="d-flex flex-column align-items-center text-center me-5" style="min-width: 200px;">
+      <img src="{% static 'images/avatar.png' %}" alt="Profile Photo" class="rounded-circle mb-3"
+        style="width: 100px; height: 100px; object-fit: cover;" />
+      <h5 class="mb-2">{{ user.first_name }} {{ user.last_name }}</h5>
+
+      {% if overall_rating %}
+      <div class="text-warning mb-2" style="font-size: 0.9rem;">
+        {% for i in "12345"|make_list %}
+          {% if forloop.counter <= overall_rating %}
+            <i class="bi bi-star-fill"></i>
+          {% else %}
+            <i class="bi bi-star"></i>
+          {% endif %}
+        {% endfor %}
+        <small class="text-muted ms-1">({{ overall_rating|floatformat:1 }} points)</small>
+      </div>
+      {% else %}
+      <div class="text-muted mb-2">No ratings yet</div>
+      {% endif %}
+
+      {% if user_is_owner %}
+      <a href="{% url 'edit_profile' %}" class="btn btn-outline-secondary mb-3 px-4">
+        Edit Profile
+      </a>
+      {% endif %}
+>>>>>>> added all reviews/rating  on profile and skills.
     </div>
 
-    <div>
+    <div class="flex-grow-1">
       <div class="mb-4">
         <h5><strong>About</strong></h5>
         <p>{{ profile.bio }}</p>
       </div>
+
       <div class="mb-4">
         <h5><strong>Skills Offered:</strong></h5>
         <div class="row g-3">
           {% for skill in skills_offered %}
           <div class="col-md-6">
             <div class="border rounded p-3 h-100 position-relative">
-              <!-- Edit & Delete Buttons (Top-Right) -->
               <div class="position-absolute top-0 end-0 m-2 d-flex align-items-center">
                 <form action="{% url 'delete_skill' skill.id %}" method="post"
                   onsubmit="return confirm('Are you sure you want to delete this skill?');" style="display: inline;">
@@ -42,21 +70,26 @@
                     <i class="bi bi-trash"></i>
                   </button>
                 </form>
-
                 <a href="{% url 'update_skill' skill.id %}" class="btn btn-outline-primary btn-sm" title="Edit">
                   <i class="bi bi-pencil"></i>
                 </a>
               </div>
               <h5 class="mb-1"><strong>{{ skill.title }}</strong></h5>
+              <div class="text-warning mb-1" style="font-size: 0.85rem;">
+                {% for i in "12345"|make_list %}
+                  {% if skill.average_rating|default:0 >= forloop.counter %}
+                    <i class="bi bi-star-fill"></i>
+                  {% elif skill.average_rating|default:0 >= forloop.counter0|add:"0.5" %}
+                    <i class="bi bi-star-half"></i>
+                  {% else %}
+                    <i class="bi bi-star"></i>
+                  {% endif %}
+                {% endfor %}
+                <small class="text-muted">({{ skill.average_rating|floatformat:1 }})</small>
+              </div>
               <p class="mb-1">{{ skill.description }}</p>
-              <p class="mb-2">
-                <strong>Category:</strong>
-                {{ skill.category }}
-              </p>
-              <p class="mb-2">
-                <strong>Location:</strong>
-                {{ skill.location }}
-              </p>
+              <p class="mb-2"><strong>Category:</strong> {{ skill.category }}</p>
+              <p class="mb-2"><strong>Location:</strong> {{ skill.location }}</p>
               {% if skill.availability %}
               <span class="badge bg-success">Available</span>
               {% else %}
@@ -84,21 +117,14 @@
                     <i class="bi bi-trash"></i>
                   </button>
                 </form>
-
                 <a href="{% url 'update_skill' skill.id %}" class="btn btn-outline-primary btn-sm" title="Edit">
                   <i class="bi bi-pencil"></i>
                 </a>
               </div>
               <h6 class="mb-1"><strong>{{ skill.title }}</strong></h6>
               <p class="mb-1">{{ skill.description }}</p>
-              <p class="mb-2">
-                <strong>Category:</strong>
-                {{ skill.category }}
-              </p>
-              <p class="mb-2">
-                <strong>Location:</strong>
-                {{ skill.location }}
-              </p>
+              <p class="mb-2"><strong>Category:</strong> {{ skill.category }}</p>
+              <p class="mb-2"><strong>Location:</strong> {{ skill.location }}</p>
             </div>
           </div>
           {% empty %}
@@ -109,13 +135,52 @@
 
       <div class="mb-4">
         <h5><strong>Last reviews:</strong></h5>
+
+        <div class="mb-4">
+          {% comment %} <h5><strong>All Reviews:</strong></h5> {% endcomment %}
+          {% if all_reviews %}
+            {% for review in all_reviews %}
+              <div class="border rounded p-3 bg-light mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <strong>{{ review.reviewer.get_full_name|default:review.reviewer.username }}</strong>
+                  <span class="text-warning small">
+                    {% for i in "12345"|make_list %}
+                      {% if forloop.counter <= review.rating %}
+                        <i class="bi bi-star-fill" style="font-size: 0.8rem;"></i>
+                      {% else %}
+                        <i class="bi bi-star" style="font-size: 0.8rem;"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </span>
+                </div>
+                <p class="mb-0">{{ review.review|default:"(No comment provided)" }}</p>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-muted">No reviews yet.</p>
+          {% endif %}
+        </div>
+        
+
+          
         {% for review in user.reviews_received.all %}
         <div class="border rounded p-3 bg-light mb-2">
           <div class="d-flex justify-content-between align-items-center mb-1">
             <strong>{{ review.reviewer.get_full_name }}</strong>
-            <span class="text-warning">★★★★☆</span>
+            <span class="text-warning">
+
+                {% for i in "12345"|make_list %}
+                  {% if forloop.counter <= review.rating %}
+                    <i class="bi bi-star-fill"></i>
+                  {% else %}
+                    <i class="bi bi-star"></i>
+                  {% endif %}
+                {% endfor %}
+
+            
+            </span>
           </div>
-          <p class="mb-0">{{ review.text }}</p>
+          <p class="mb-0">{{ review.review }}</p>
         </div>
         {% endfor %}
       </div>
