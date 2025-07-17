@@ -41,34 +41,11 @@ class Skill(models.Model):
         return f"{self.title} {self.description} ({self.get_type_display()})"
 
 
-# class Rating(models.Model):
-#     name = models.CharField(max_length=256, blank=False)
-#     rated_at = models.DateTimeField('Rated At', auto_now_add=True)
-#     rated_by = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
-#     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
-
-
-from django.db.models import Avg
-
 class Rating(models.Model):
-    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings_given', null=True, blank=True)
-    reviewee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_reviews', null=True, blank=True)
-    skill = models.ForeignKey('Skill', on_delete=models.CASCADE)
-    review = models.TextField(blank=True, null=True)
-    rating = models.PositiveIntegerField(default=1)
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-
-    class Meta:
-        unique_together = ('reviewer', 'reviewee', 'skill')
-
-
-    def average_rating_for_skill(self):
-        return Rating.objects.filter(skill=self.skill).aggregate(avg=Avg('rating'))['avg']
-
-
-
-
+    name = models.CharField(max_length=256, blank=False)
+    rated_at = models.DateTimeField('Rated At', auto_now_add=True)
+    rated_by = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
 
 class UserProfile(models.Model):

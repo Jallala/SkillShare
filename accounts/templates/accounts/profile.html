@@ -10,25 +10,10 @@
         <img src="{% static 'images/avatar.png' %}" alt="Profile Photo" class="rounded-circle mb-3"
           style="width: 100px; height: 100px; object-fit: cover;" />
         <h5 class="mb-2">{{ user.first_name }} {{ user.last_name }}</h5>
-
-        {% if overall_rating %}
         <div class="text-warning mb-2">
-          {% for i in "12345"|make_list %}
-            {% if forloop.counter <= overall_rating %}
-              <i class="bi bi-star-fill"></i>
-            {% else %}
-              <i class="bi bi-star"></i>
-            {% endif %}
-          {% endfor %}
-          <small class="text-muted ms-1">({{ overall_rating|floatformat:1 }} points)</small>
+          ★★★★☆
+          <small class="text-muted ms-1">(4.5 points)</small>
         </div>
-      {% else %}
-        <div class="text-muted mb-2">No ratings yet</div>
-      {% endif %}
-      
-
-
-
         {% if user_is_owner %}
         <a href="{% url 'edit_profile' %}" class="btn btn-outline-secondary mb-3 px-4">
           Edit Profile

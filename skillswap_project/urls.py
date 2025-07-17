@@ -24,7 +24,4 @@ urlpatterns = [
     path('', include('search.urls')),
     path('accounts/', include('accounts.urls')),
     path('contact/', include('skillswap_contact.urls')),
-
-    path('reviews/', include('skillswap_review.urls', namespace='skillswap_review')),
-
 ]

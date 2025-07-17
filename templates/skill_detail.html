@@ -4,94 +4,36 @@
 <div class="container py-5">
   <div class="border rounded p-4">
     <h2>{{ skill.title }}</h2>
-
-    {% if average_rating %}
-    <div class="text-warning mb-2">
-      {% for i in "12345"|make_list %}
-        {% if forloop.counter <= average_rating %}
-          <i class="bi bi-star-fill"></i>
-        {% else %}
-          <i class="bi bi-star"></i>
-        {% endif %}
-      {% endfor %}
-      <small class="text-muted ms-2">({{ average_rating|floatformat:1 }} / 5 average)</small>
-    </div>
-  {% else %}
-    <p class="text-muted">No ratings yet.</p>
-  {% endif %}
-  
-
-    <p>{{ skill.user.userprofile.bio|default:"This user does not have a BIO." }}</p>
-
+    <p>{{ skill.user.userprofile.bio|default:"This user do not have a BIO." }}</p>
     <p>
       <strong>Availability:</strong>
       {% if skill.availability %}
-        <span class="badge bg-success">Available</span>
+      <span class="badge bg-success">Available</span>
       {% else %}
-        <span class="badge bg-secondary">Unavailable</span>
+      <span class="badge bg-secondary">Unavailable</span>
       {% endif %}
     </p>
-
     <p>
       <strong>Offered By:</strong>
       {% if skill.user.first_name or skill.user.last_name %}
         {{ skill.user.first_name }} {{ skill.user.last_name }}
       {% else %}
-        This account has not published a name.
+        {{ "This account has not published a name."}}
       {% endif %}
     </p>
-
+    <h3>Reviews</h3>
+    <div>
+    <!--Just put the same static text with stars here as on the other card, 
+    check with Kalpana, where i can get the real reviews from -->
+    <span class="text-warning">★★★★☆</span>
+      <img src="{% static '' %}" alt="5-star rating" style="width: 100px;">
+      <p>TODO: Get review!</p>
+    </div>
     <div class="d-flex justify-content-center gap-4 mt-4">
       <a href="{% url 'skillswap_contact.chat' skill.user.id %}" class="btn btn-outline-secondary">Contact/Request</a>
-      <button type="button" class="btn btn-sm btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#reviewModal"
-              data-skill-id="{{ skill.id }}"
-              data-skill-title="{{ skill.title }}"
-              data-reviewee-username="{{ skill.user.username }}">
-        Leave a Review
-      </button>
+      <!--Leave a review, Need to check what the review URL is with Kalpana-->
+      <a href="#" class="btn btn-outline-primary">Leave a Review</a>
     </div>
   </div>
-
-  <div class="mt-5">
-    <h3>Reviews</h3>
-    {% if ratings %}
-      {% for rating in ratings %}
-        <div class="border rounded p-3 mb-3 shadow-sm">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div>
-              <strong>Review by:</strong>
-              {{ rating.reviewer.get_full_name|default:rating.reviewer.username }}
-            </div>
-            <div class="text-warning">
-              {% for i in "12345"|make_list %}
-                {% if forloop.counter <= rating.rating %}
-                  <i class="bi bi-star-fill"></i>
-                {% else %}
-                  <i class="bi bi-star"></i>
-                {% endif %}
-              {% endfor %}
-            </div>
-          </div>
-          <p class="mb-1">{{ rating.review|default:"(No comment provided)" }}</p>
-          <small class="text-muted">{{ rating.created_at|date:"M d, Y" }}</small>
-        </div>
-      {% endfor %}
-    {% else %}
-      <p class="text-muted">No reviews yet for this skill.</p>
-    {% endif %}
-    
-  </div>
 </div>
-
-{% include 'reviews/_review_modal.html' %}
 {% endblock %}
-
-
-
-
-
-
-
-
