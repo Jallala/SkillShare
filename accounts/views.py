@@ -20,7 +20,7 @@ def signup_view(request):
             user = form.save()
             UserProfile.objects.create(user=user)
             messages.success(
-                request, 'Account created successfully! Now complete your profile.'
+                request, 'Account created successfully!'
             )
             return redirect('edit_profile')
     else:
