@@ -43,16 +43,19 @@ def _get_messages(request: 'HttpRequest') -> 'QuerySet[Message]':
 
 @login_required
 def api_messages(request: 'HttpRequest') -> HttpResponse:
-    messages = _get_messages(request)
-    return JsonResponse({'messages': [m.as_dict() for m in messages]})
+    user = request.user
+    messages = Messages.get_messages_for(user)
+    return JsonResponse({'messages': [m.as_dict() for m in messages.messages.order_by('sent_at')]})
 
 
 @login_required
 def messages(request: 'HttpRequest') -> HttpResponse:
-    messages = _get_messages(request)
+    user = request.user
+    messages = Messages.get_messages_for(user)
     chats = {}
-    for message in messages.order_by('-sent_at'):
-        to_other: 'Messages' = message.receiver if message.receiver is not messages else message.sender
+    for message in messages.messages.order_by('-sent_at'):
+        to_other: 'Messages' = message.receiver if message.receiver.id != messages.id else message.sender
+        assert to_other is not messages
         if to_other.id not in chats:
             chats[to_other.id] = {
                 'chat_with': to_other.user.username,
@@ -65,7 +68,7 @@ def messages(request: 'HttpRequest') -> HttpResponse:
 @login_required
 def chat_with_user(request: 'HttpRequest', uid: int) -> HttpResponse:
     all_messages = Messages.get_messages_for(request.user)
-    other_user = UserProfile.get_user_profile_from(uid)
+    to_other = Messages.get_messages_for(uid)
     messages_with_user = all_messages.get_chat_log_with(uid)
     if request.method == 'POST':
         try:
@@ -74,7 +77,7 @@ def chat_with_user(request: 'HttpRequest', uid: int) -> HttpResponse:
             raise
     context = {
         'chat': [m.for_template() for m in messages_with_user],
+        'other': to_other.user,
         'user': request.user,
-        'other': other_user.for_template()
     }
     return render(request, TEMPLATE_CHAT_PAGE, context=context)
