@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container py-5">
+  <div class="border rounded p-4">
+    <h2>{{ skill.title }}</h2>
+    <p>{{ skill.user.userprofile.bio|default:"This user do not have a BIO." }}</p>
+    <p>
+      <strong>Availability:</strong>
+      {% if skill.availability %}
+      <span class="badge bg-success">Available</span>
+      {% else %}
+      <span class="badge bg-secondary">Unavailable</span>
+      {% endif %}
+    </p>
+    <p>
+      <strong>Offered By:</strong>
+      {% if skill.user.first_name or skill.user.last_name %}
+        {{ skill.user.first_name }} {{ skill.user.last_name }}
+      {% else %}
+        {{ "This account has not published a name."}}
+      {% endif %}
+    </p>
+    <h3>Reviews</h3>
+    <div>
+    <!--Just put the same static text with stars here as on the other card, 
+    check with Kalpana, where i can get the real reviews from -->
+    <span class="text-warning">★★★★☆</span>
+      <img src="{% static '' %}" alt="5-star rating" style="width: 100px;">
+      <p>TODO: Get review!</p>
+    </div>
+    <div class="d-flex justify-content-center gap-4 mt-4">
+      <a href="{% url 'skillswap_contact.chat' skill.user.id %}" class="btn btn-outline-secondary">Contact/Request</a>
+      <!--Leave a review, Need to check what the review URL is with Kalpana-->
+      <a href="#" class="btn btn-outline-primary">Leave a Review</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

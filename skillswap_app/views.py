@@ -6,7 +6,8 @@ from django.contrib import messages
 from skillswap_common.models import Skill, Category
 from skillswap_app import form
 from django.contrib.auth.models import User
-
+from django.views.generic import DetailView
+from skillswap_common.models import Skill
 
 def create_skill(request):
     if request.method == 'POST':
@@ -62,19 +63,21 @@ def delete_skill(request, skill_id):
 
 def search_skills_view(request):
     query = request.GET.get('q', '').strip()
-    users = []
     skills = []
-    categories = Category.objects.all() 
+    categories = Category.objects.all()
 
     if query:
-        users = User.objects.filter(username__icontains=query)
         skills = Skill.objects.filter(title__icontains=query)
     else:
-        skills = Skill.objects.all()  
+        skills = Skill.objects.all()
 
     return render(request, 'search.html', {
-        'users': users,
         'skills': skills,
         'categories': categories,
         'query': query
     })
+
+class SkillDetailView(DetailView):
+    model = Skill
+    template_name = 'skill_detail.html'
+    context_object_name = 'skill'

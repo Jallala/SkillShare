@@ -1,33 +1,90 @@
 <!-- prettier-ignore -->
 {% extends 'base.html' %}
 {% load static %} 
-{% block content %} 
+{% block content %}
+<section>
+  <div class="container py-5">
 
-<div class="d-flex flex-column justify-content-center align-items-center vh-90">
-  <p>Chat with {{ other.username }}</p>
-  <div class="text-center mb-4">
-    {% for message in chat %}
-        <div class="text-center mb-4">
-            <p class="text">{{ message.sender.username }}</p><p class="text-muted">{{ message.message }}</p>
+    <div class="row d-flex justify-content-left">
+      <div class="col-md-12 col-lg-8 col-xl-6">
+
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center p-3"
+            style="border-top: 4px solid #0097b2;">
+            <h5 class="mb-0">Chat with {{ other.username }}</h5>
+            <div class="d-flex flex-row align-items-center">
+              <i class="fas fa-minus me-3 text-muted fa-xs"></i>
+              <i class="fas fa-comments me-3 text-muted fa-xs"></i>
+              <i class="fas fa-times text-muted fa-xs"></i>
+            </div>
+          </div>
+          <div class="card-body overflow-hidden" style="max-height: 80%">
+              {% for message in chat %}
+              {% if user.id == message.sender.id %}
+              <div class="d-flex justify-content-between">
+              <p class="small mb-1">{{ message.sender.username }}</p>
+              <p class="small mb-1 text-muted">{{ message.sent_at }}</p>
+              </div>
+              <div class="d-flex flex-row justify-content-start">
+                <img src="{% static 'images/avatar.png' %}"
+                  alt="avatar 1" style="width: 45px; height: 100%;">
+                <div>
+                  <p class="small p-2 ms-3 mb-3 rounded-3 bg-body-tertiary">{{ message.message }}</p>
+                </div>
+              </div>
+              {% else %}
+              <div class="d-flex justify-content-between">
+              <p class="small mb-1 text-muted">{{ message.sent_at }}</p>
+                <p class="small mb-1">{{ message.sender.username }}</p>
+              </div>
+              <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                <div>
+                  <p class="small p-2 me-3 mb-3 text rounded-3 chat_sender">{{ message.message }}</p>
+                </div>
+                <img src="{% static 'images/avatar.png' %}"
+                  alt="avatar 1" style="width: 45px; height: 100%;">
+              </div>
+              {% endif %}
+              {% endfor %}
+          </div>
+          <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+            <form method="post" class="w-100" style="max-width: 330px;">
+              <div class="input-group mb-0">
+                  {% csrf_token %}
+                <input 
+                  type="text" 
+                  name="message"
+                  class="form-control" 
+                  placeholder="Type message"
+                  id="id_message"
+                  required
+                  aria-label="Recipient's username" aria-describedby="button-addon2" />
+                <button type="submit" class="btn btn-custom" type="button" id="button-addon2" style="padding-top: .55rem;">
+                    Send
+                </button>
+              </div>
+            </form>
+
+          </div>
         </div>
-    {% endfor %}
-  </div>
-  <form method="post" class="w-100" style="max-width: 330px;">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="id_message" class="form-label fw-semibold"></label>
-      <input
-        type="text"
-        name="message"
-        class="form-control"
-        placeholder="Message"
-        required
-        id="id_message"
-      />
+
+      </div>
     </div>
-    <button type="submit" class="btn btn-custom w-100 mb-2">
-      Send
-    </button>
-  </form>
-</div>
+
+  </div>
+</section>
+<style type="text/css">
+  .chat_sender {
+    background-color: #0097b2; 
+    color: white;
+  }
+  .mask-custom {
+  background: rgba(24, 24, 16, .2);
+  border-radius: 2em;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  background-clip: padding-box;
+  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+}
+</style>
 {% endblock content %} 

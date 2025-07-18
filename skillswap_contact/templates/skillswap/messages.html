@@ -3,12 +3,17 @@
 {% load static %} 
 {% block content %} 
 
+
 <div class="d-flex flex-column justify-content-center align-items-center vh-90">
   <div class="text-center mb-4">
     {% for id, chat in chats.items %}
         <div class="text-center mb-4">
             <a href="{% url chat_base_url id %}">
-              <p class="text">{{ chat.chat_with }}</p><p class="text-muted">{{ chat.last_message.message }}</p>
+              <p class="text">Open chat with:  {{ chat.chat_with }}</p>
+              <p class="text">Last Message:</p>
+              <p class="text">Sent At: {{ chat.last_message.sent_at }}</p>
+              <p class="text"><strong>{{ chat.last_message.sender.username }}</strong> wrote:</p>
+              <p class="text-muted">{{ chat.last_message.message }}</p>
            </a>
         </div>
     {% endfor %}
