@@ -43,10 +43,6 @@
     <div class="col-md-4">
       <div class="border rounded p-4 h-100">
         <h5>{{ skill.title }}</h5>
-
-
-        
-
         <p>{{ skill.description }}</p>
         <p>
           <strong>Category:</strong>
@@ -62,42 +58,18 @@
         </p>
 
         <div class="d-flex align-items-center mt-3">
-          {% if skill.user.userprofile.image %}
-            <img
-              src="{{ skill.user.userprofile.image.url }}"
-              class="rounded-circle me-2"
-              style="width: 40px; height: 40px; object-fit: cover;"
-              alt="User photo"
-            />
-          {% else %}
-            <img
-              src="{% static 'images/avatar.png' %}"
-              class="rounded-circle me-2"
-              style="width: 40px; height: 40px; object-fit: cover;"
-              alt="Default user photo"
-            />
-          {% endif %}
-
+          <img
+            src="{% static 'images/avatar.png' %}"
+            class="rounded-circle me-2"
+            style="width: 40px; height: 40px;"
+            alt="User photo"
+          />
           <div>
             <strong>
               {{ skill.user.first_name }} {{ skill.user.last_name }}
             </strong>
             <br />
-            {% comment %} <span class="text-warning">★★★★☆</span> {% endcomment %}
-
-            <span class="ms-2 text-warning fs-6">  <!-- fs-6 = small -->
-              {% for i in "12345"|make_list %}
-                {% if forloop.counter <= skill.average_rating|default:0 %}
-                  <i class="bi bi-star-fill"></i>
-                {% elif skill.average_rating|default:0 >= forloop.counter0|add:"0.5" %}
-                  <i class="bi bi-star-half"></i>
-                {% else %}
-                  <i class="bi bi-star"></i>
-                {% endif %}
-              {% endfor %}
-            </span>
-            
-            
+            <span class="text-warning">★★★★☆</span>
           </div>
         </div>
 
