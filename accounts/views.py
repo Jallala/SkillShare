@@ -34,56 +34,13 @@ def profile_view(request):
     profile = UserProfile.objects.get(user=request.user)
     skills_offered = Skill.objects.filter(user=profile.user, type='offer')
     skills_needed = Skill.objects.filter(user=profile.user, type='request')
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    overall_rating = Rating.objects.filter(skill__in=skills_offered).aggregate(avg=Avg('rating'))['avg']
-
-     # Get all reviews for skills offered by the user
-    skill_ids = skills_offered.values_list('id', flat=True)
-    all_reviews = Rating.objects.filter(skill_id__in=skill_ids).select_related('reviewer')
->>>>>>> added all reviews/rating  on profile and skills.
 
     return render(request, 'accounts/profile.html', {
         'profile': profile,
         'user_is_owner': True,
         'skills_offered': skills_offered,
         'skills_needed': skills_needed,
-<<<<<<< HEAD
-=======
-        'overall_rating': overall_rating, 
-        'all_reviews': all_reviews,
     })
-
-
-    from skillswap_common.models import Skill, Rating
-
-@login_required
-def profile_view(request):
-    profile = UserProfile.objects.get(user=request.user)
-    skills_offered = Skill.objects.filter(user=profile.user, type='offer')
-    skills_needed = Skill.objects.filter(user=profile.user, type='request')
-=======
->>>>>>> Update profile layout and button styling; adjusted views for review
-
-    # Get all reviews for skills offered by the user
-    skill_ids = skills_offered.values_list('id', flat=True)
-    all_reviews = Rating.objects.filter(skill_id__in=skill_ids).select_related('reviewer')
-
-    # Calculate overall rating from all received reviews
-    overall_rating = all_reviews.aggregate(Avg('rating'))['rating__avg']
-
-    return render(request, 'accounts/profile.html', {
-        'profile': profile,
-        'user_is_owner': True,
-        'skills_offered': skills_offered,
-        'skills_needed': skills_needed,
-        'all_reviews': all_reviews,
-        'overall_rating': overall_rating,
->>>>>>> added all reviews/rating  on profile and skills.
-    })
-
-
 
 
 @login_required
@@ -93,9 +50,7 @@ def edit_profile(request):
 
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=user)
-        # profile_form = ProfileForm(request.POST, instance=profile)
-        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
-
+        profile_form = ProfileForm(request.POST, instance=profile)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
@@ -110,4 +65,3 @@ def edit_profile(request):
         'user_form': user_form,
         'profile_form': profile_form,
     })
-

@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
-import os
-from django.conf import settings
+
 
 if TYPE_CHECKING:
     from typing import Literal
@@ -38,21 +37,10 @@ class Skill(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    #for stars
-    def average_rating(self):
-        from .models import Rating
-        avg = Rating.objects.filter(skill=self).aggregate(avg=Avg('rating'))['avg']
-        return round(avg or 0, 1)
+    def __str__(self):
+        return f"{self.title} {self.description} ({self.get_type_display()})"
 
 
-
-<<<<<<< HEAD
-=======
-
-
-from django.db.models import Avg
-
->>>>>>> added all reviews/rating  on profile and skills.
 class Rating(models.Model):
     name = models.CharField(max_length=256, blank=False)
     rated_at = models.DateTimeField('Rated At', auto_now_add=True)
@@ -67,31 +55,6 @@ class UserProfile(models.Model):
     skills_offered = models.CharField(max_length=255, blank=True)
     skills = models.ManyToManyField(Skill)
     ratings = models.ManyToManyField(Rating)
-
-    image = models.ImageField(
-        upload_to='profile_pics/',
-        default='profile_pics/default.png',
-        blank=True,
-        null=True
-    )
-
-    def save(self, *args, **kwargs):
-        try:
-            old = UserProfile.objects.get(pk=self.pk)
-            if old.image and old.image != self.image:
-                old_path = os.path.join(settings.MEDIA_ROOT, old.image.name)
-                if os.path.exists(old_path) and 'default.png' not in old_path:
-                    os.remove(old_path)
-        except UserProfile.DoesNotExist:
-            pass  # This is a new profile, no image to delete
-
-        super().save(*args, **kwargs)
-
-
-
-
-
-
 
     @classmethod
     def get_user_profile_from(cls, uid_or_user: 'int | User | UserProfile') -> 'UserProfile':
