@@ -62,12 +62,22 @@
         </p>
 
         <div class="d-flex align-items-center mt-3">
-          <img
-            src="{% static 'images/avatar.png' %}"
-            class="rounded-circle me-2"
-            style="width: 40px; height: 40px;"
-            alt="User photo"
-          />
+          {% if skill.user.userprofile.image %}
+            <img
+              src="{{ skill.user.userprofile.image.url }}"
+              class="rounded-circle me-2"
+              style="width: 40px; height: 40px; object-fit: cover;"
+              alt="User photo"
+            />
+          {% else %}
+            <img
+              src="{% static 'images/avatar.png' %}"
+              class="rounded-circle me-2"
+              style="width: 40px; height: 40px; object-fit: cover;"
+              alt="Default user photo"
+            />
+          {% endif %}
+
           <div>
             <strong>
               {{ skill.user.first_name }} {{ skill.user.last_name }}
