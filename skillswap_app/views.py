@@ -78,8 +78,9 @@ def search_skills_view(request):
         'skills': skills,
         'categories': categories,
         'query': query
-        
     })
+
+    
 
 class skill_detail(DetailView):
     model = Skill
