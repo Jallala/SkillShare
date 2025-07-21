@@ -62,6 +62,7 @@ def delete_skill(request, skill_id):
         return redirect('profile')  # <-- make sure 'profile' is your profile URL name
 
     return redirect('profile')
+  
 
 def search_skills_view(request):
     query = request.GET.get('q', '').strip()
@@ -83,6 +84,7 @@ def search_skills_view(request):
 class skill_detail(DetailView):
     model = Skill
     template_name = 'skill_detail.html'
+
 
     context_object_name = 'skill'
 
@@ -112,10 +114,4 @@ class SkillDetailView(DetailView):
         context['ratings'] = Rating.objects.filter(skill=skill)
         context['average_rating'] = Rating.objects.filter(skill=skill).aggregate(avg=Avg('rating'))['avg']
         return context
-
-# def skill_detail(request, pk):
-#     skill = get_object_or_404(Skill, pk=pk)
-#     return render(request, 'skillswap_app/skill_detail.html', {'skill': skill})
-
-
 
