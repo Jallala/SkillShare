@@ -1,6 +1,8 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 
-<div class="container mt-5" style="max-width: 500px;">
+{% comment %} <div class="container mt-5" style="max-width: 500px;"> {% endcomment %}
+<div class="container d-flex justify-content-center align-items-center">
+  <div class="bg-white shadow p-4" >
   <h2 class="mb-4">Edit Your Profile</h2>
 
   {% comment %} <form method="post"> {% endcomment %}
@@ -29,5 +31,5 @@
       <button type="submit" class="btn btn-custom w-100">Save Changes</button>
   </form>
 </div>
-
+</div>
 {% endblock %}

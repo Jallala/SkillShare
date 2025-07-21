@@ -1,27 +1,27 @@
-{% comment %} <!—- SkillShare/skillswap_review/templates/reviews/_review_modal.html -—> {% endcomment %}
-{% comment %}  {% endcomment %}
+
 <style>
-  .btn-custom-fixed {
+.btn-custom-fixed {
     width: 120px;
     height: 40px;
-  }
+  } 
 </style>
 
 
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+<div class="modal fade "   id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
-        <form method="post" action="{% url 'skillswap_review:submit_review' skill.user.username skill.id %}">
+
+    <div class="modal-content" >
+      <form method="post" action="{% url 'skillswap_review:submit_review' skill.user.username skill.id %}">
 
         {% csrf_token %}
-        <div class="modal-header">
+        <div class="modal-header bg-light">
           <h5 class="modal-title" id="reviewModalLabel">Leave a Review for:  <span id="modalSkillTitle"></span></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body bg-light">
           <input type="hidden" id="modalSkillId" name="skill_id"> {# Make sure name="skill_id" #}
 
-          <div class="mb-3 ">
+          <div class="mb-3">
             <label for="ratingInput" class="form-label">Rating:</label>
             <div id="starRating" class="text-warning small" data-rating="0"> {# data-rating to manage client-side state #}
               <i class="bi bi-star" data-value="1"></i>
@@ -36,7 +36,7 @@
   
             <div class="mb-3">
               <label for="commentTextarea" class="form-label">Comment:</label>
-              <textarea class="form-control bg-light" id="commentTextarea" name="comment" rows="3" required></textarea>
+              <textarea class="form-control bg-white" id="commentTextarea" name="comment" rows="3" required></textarea>
             </div>
 
         <div class="modal-footer">
@@ -47,7 +47,6 @@
     </div>
   </div>
 </div>
-
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
