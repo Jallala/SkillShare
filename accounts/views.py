@@ -36,8 +36,6 @@ def profile_view(request):
     skills_offered = Skill.objects.filter(user=profile.user, type='offer')
     skills_needed = Skill.objects.filter(user=profile.user, type='request')
 
-    # overall_rating = Rating.objects.filter(skill__in=skills_offered).aggregate(avg=Avg('rating'))['avg']
-
      # Get all reviews for skills offered by the user
     skill_ids = skills_offered.values_list('id', flat=True)
     all_reviews = Rating.objects.filter(skill_id__in=skill_ids).select_related('reviewer')

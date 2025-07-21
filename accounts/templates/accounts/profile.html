@@ -14,8 +14,8 @@
   }
 </style>
 
-<div class="container py-5">
-  <div class="bg-white rounded-4 shadow-sm p-5 position-relative">
+ <div class="container bg-white py-3 px-3 shadow">
+  <div class="bg-white rounded-4 shadow-sm p-5  position-relative"> 
 
     <!-- Top-right offer/request button -->
     <a href="{% url 'create_skill' %}" class="btn btn-custom position-absolute top-0 end-0 mt-3 me-3">
@@ -67,11 +67,11 @@
           <h5><strong>About</strong></h5>
           <p>{{ profile.bio }}</p>
         </div>
-        <div class="mb-4">
+        <div class="mb-4 rounded-4 shadow-sm p-5 ">
           <h5><strong>Skills Offered</strong></h5>
-          <div class="row g-3">
+          <div class="row g-3 ">
             {% for skill in skills_offered %}
-              <div class="col-md-6">
+              <div class="col-md-6 bg-white py-3 px-3 shadow">
                 <div class="border rounded p-3 position-relative h-100">
                   <div class="position-absolute top-0 end-0 m-2 d-flex">
                     <form action="{% url 'delete_skill' skill.id %}" method="post" style="display:inline;">
@@ -112,11 +112,11 @@
           </div>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-4 rounded-4 shadow-sm p-5 ">
           <h5><strong>Skills Needed</strong></h5>
           <div class="row g-3">
             {% for skill in skills_needed %}
-              <div class="col-md-6">
+              <div class="col-md-6 bg-white py-3 px-3 shadow">
                 <div class="border rounded p-3 position-relative h-100">
                   <div class="position-absolute top-0 end-0 m-2 d-flex">
                     <form action="{% url 'delete_skill' skill.id %}" method="post" style="display:inline;">
@@ -137,11 +137,11 @@
           </div>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-4 rounded-4 shadow-sm p-5 ">
           <h5><strong>Last reviews</strong></h5>
           {% if all_reviews %}
             {% for review in all_reviews %}
-              <div class="border rounded p-3 bg-light mb-2">
+              <div class="border rounded p-3 bg-white shadow mb-2">
                 <div class="d-flex justify-content-between">
                   <div>
                   <strong>{{ review.reviewer.get_full_name|default:review.reviewer.username }}</strong>

@@ -93,7 +93,6 @@ class skill_detail(DetailView):
         # Reviews only for this skill
         context['ratings'] = Rating.objects.filter(skill=skill)
         context['average_rating'] = Rating.objects.filter(skill=skill).aggregate(avg=Avg('rating'))['avg']
-        # context['all_reviews_for_user'] = Rating.objects.filter(reviewee=skill.user).exclude(skill=skill)
 
         return context
 

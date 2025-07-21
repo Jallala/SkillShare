@@ -9,8 +9,9 @@
   .
 </div>
 {% endif %}
-
-<div class="d-flex flex-column justify-content-center align-items-center vh-90">
+<div class="container d-flex justify-content-center align-items-center">
+  <div class="bg-white shadow p-4" >
+{% comment %} <div class="d-flex flex-column justify-content-center align-items-center vh-90"> {% endcomment %}
   <div class="text-center mb-4">
     <img
       src="{% static 'images/logo.png' %}"
@@ -60,5 +61,6 @@
       Sign Up
     </a>
   </form>
+</div>
 </div>
 {% endblock %}
