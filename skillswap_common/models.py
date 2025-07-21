@@ -1,3 +1,5 @@
+# SkillShare/skillswap_common
+
 import logging
 from typing import TYPE_CHECKING
 
@@ -6,6 +8,8 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 import os
 from django.conf import settings
+from django.db.models import Avg
+
 
 if TYPE_CHECKING:
     from typing import Literal
@@ -45,19 +49,20 @@ class Skill(models.Model):
         return round(avg or 0, 1)
 
 
-
-<<<<<<< HEAD
-=======
-
-
-from django.db.models import Avg
-
->>>>>>> added all reviews/rating  on profile and skills.
 class Rating(models.Model):
-    name = models.CharField(max_length=256, blank=False)
-    rated_at = models.DateTimeField('Rated At', auto_now_add=True)
-    rated_by = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
-    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings_given', null=True, blank=True)
+    reviewee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_reviews', null=True, blank=True)
+    skill = models.ForeignKey('Skill', on_delete=models.CASCADE)
+    review = models.TextField(blank=True, null=True)
+    rating = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True , null=True, blank=True)
+
+    class Meta:
+        unique_together = ('reviewer', 'reviewee', 'skill')
+
+    def __str__(self):
+        return f"{self.reviewer} rated {self.reviewee} - {self.rating} stars"
 
 
 class UserProfile(models.Model):
