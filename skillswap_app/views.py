@@ -1,4 +1,4 @@
-
+#  skillswap_app/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from .form import SkillForm
 from django.contrib.auth.decorators import login_required
@@ -7,7 +7,9 @@ from skillswap_common.models import Skill, Category
 from skillswap_app import form
 from django.contrib.auth.models import User
 from django.views.generic import DetailView
-from skillswap_common.models import Skill
+from skillswap_common.models import Skill , Rating
+from django.db.models import Avg
+
 
 def create_skill(request):
     if request.method == 'POST':
@@ -75,14 +77,13 @@ def search_skills_view(request):
         'skills': skills,
         'categories': categories,
         'query': query
+        
     })
 
-class SkillDetailView(DetailView):
+class skill_detail(DetailView):
     model = Skill
     template_name = 'skill_detail.html'
-<<<<<<< HEAD
-    context_object_name = 'skill'
-=======
+
     context_object_name = 'skill'
 
     def get_context_data(self, **kwargs):
@@ -91,9 +92,6 @@ class SkillDetailView(DetailView):
 
         # Reviews only for this skill
         context['ratings'] = Rating.objects.filter(skill=skill)
-
-        context['all_reviews_for_user'] = Rating.objects.filter(reviewee=skill.user).exclude(skill=skill)
-
         context['average_rating'] = Rating.objects.filter(skill=skill).aggregate(avg=Avg('rating'))['avg']
 
         return context
@@ -101,5 +99,23 @@ class SkillDetailView(DetailView):
 
 
 
+# skillswap_app/views.py
+class SkillDetailView(DetailView):
+    model = Skill
+    template_name = 'skill_detail.html'
+    context_object_name = 'skill'
 
->>>>>>> Update profile layout and button styling; adjusted views for review
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        skill = self.get_object()
+
+        context['ratings'] = Rating.objects.filter(skill=skill)
+        context['average_rating'] = Rating.objects.filter(skill=skill).aggregate(avg=Avg('rating'))['avg']
+        return context
+
+# def skill_detail(request, pk):
+#     skill = get_object_or_404(Skill, pk=pk)
+#     return render(request, 'skillswap_app/skill_detail.html', {'skill': skill})
+
+
+

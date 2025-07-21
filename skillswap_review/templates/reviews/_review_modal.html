@@ -1,0 +1,103 @@
+{% comment %} <!—- SkillShare/skillswap_review/templates/reviews/_review_modal.html -—> {% endcomment %}
+{% comment %}  {% endcomment %}
+<style>
+  .btn-custom-fixed {
+    width: 120px;
+    height: 40px;
+  }
+</style>
+
+
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <form method="post" action="{% url 'skillswap_review:submit_review' skill.user.username skill.id %}">
+
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="reviewModalLabel">Leave a Review for:  <span id="modalSkillTitle"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="modalSkillId" name="skill_id"> {# Make sure name="skill_id" #}
+
+          <div class="mb-3 ">
+            <label for="ratingInput" class="form-label">Rating:</label>
+            <div id="starRating" class="text-warning small" data-rating="0"> {# data-rating to manage client-side state #}
+              <i class="bi bi-star" data-value="1"></i>
+              <i class="bi bi-star" data-value="2"></i>
+              <i class="bi bi-star" data-value="3"></i>
+              <i class="bi bi-star" data-value="4"></i>
+              <i class="bi bi-star" data-value="5"></i>
+            </div>
+            <input type="hidden" id="ratingValue" name="rating" value="0"> {# Make sure name="rating" #}
+          </div>
+
+  
+            <div class="mb-3">
+              <label for="commentTextarea" class="form-label">Comment:</label>
+              <textarea class="form-control bg-light" id="commentTextarea" name="comment" rows="3" required></textarea>
+            </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-custom-fixed" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-outline-secondary btn-custom-fixed">OK    </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const reviewModal = document.getElementById('reviewModal');
+    const modalSkillTitle = reviewModal.querySelector('#modalSkillTitle');
+    const modalSkillIdInput = reviewModal.querySelector('#modalSkillId');
+    const starRatingDiv = reviewModal.querySelector('#starRating');
+    const ratingValueInput = reviewModal.querySelector('#ratingValue');
+    const commentTextarea = reviewModal.querySelector('#commentTextarea');
+  
+    // Helper: update star icons visually
+    function updateStars(rating) {
+      starRatingDiv.querySelectorAll('i').forEach(star => {
+        const starValue = Number(star.dataset.value);
+        star.classList.toggle('bi-star-fill', starValue <= rating);
+        star.classList.toggle('bi-star', starValue > rating);
+      });
+    }
+  
+    // Reset modal state on open
+    reviewModal.addEventListener('show.bs.modal', event => {
+      const button = event.relatedTarget;
+      modalSkillTitle.textContent = button.getAttribute('data-skill-title');
+      modalSkillIdInput.value = button.getAttribute('data-skill-id');
+      ratingValueInput.value = '0';
+      updateStars(0);
+      commentTextarea.value = '';
+    });
+  
+    // Star click: set rating
+    starRatingDiv.addEventListener('click', e => {
+      if (e.target.tagName === 'I') {
+        const rating = Number(e.target.dataset.value);
+        ratingValueInput.value = rating;
+        updateStars(rating);
+      }
+    });
+  
+    // Star hover: preview rating
+    starRatingDiv.addEventListener('mousemove', e => {
+      if (e.target.tagName === 'I') {
+        updateStars(Number(e.target.dataset.value));
+      }
+    });
+  
+    // Reset stars when mouse leaves rating area
+    starRatingDiv.addEventListener('mouseleave', () => {
+      updateStars(Number(ratingValueInput.value));
+    });
+  });
+  </script>
+  
+
