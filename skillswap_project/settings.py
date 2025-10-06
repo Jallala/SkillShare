@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 from pathlib import Path
 import os
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,10 +26,16 @@ TEMPLATES_DIR = BASE_DIR /'skillswap_app'/'templates'
 SECRET_KEY = 'django-insecure-+88t5k-_1@x&t-jco6@nymbmn287vce4aj2zezz+xv%%vt2v5*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', False))
 
-ALLOWED_HOSTS = []
+def load_hosts_from_env():
+    hosts = os.environ.get('WEBSITE_HOSTNAME', [])
+    if not hosts:
+         hosts = list(map(str.strip, hosts.split(',')))
+    return hosts
 
+ALLOWED_HOSTS = load_hosts_from_env()
+logging.getLogger().debug('DEBUG = %s, WEBSITE_HOSTNAME = %s', DEBUG, ALLOWED_HOSTS)
 
 # Application definition
 
