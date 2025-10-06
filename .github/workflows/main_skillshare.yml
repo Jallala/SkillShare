@@ -68,4 +68,6 @@ jobs:
         with:
           app-name: 'skillshare'
           slot-name: 'Production'
+          app-settings-json: '[{ "name": "DISABLE_COLLECTSTATIC", "value": "true" }, { "name": "POST_BUILD_COMMAND",  "value": "python manage.py makemigrations && python manage.py migrate" }, { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true" }]'
+
           
