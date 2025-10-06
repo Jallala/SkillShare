@@ -30,7 +30,7 @@ DEBUG = bool(os.environ.get('DEBUG', False))
 
 def load_hosts_from_env():
     hosts = os.environ.get('WEBSITE_HOSTNAME', [])
-    if not hosts:
+    if hosts:
          hosts = list(map(str.strip, hosts.split(',')))
     return hosts
 
